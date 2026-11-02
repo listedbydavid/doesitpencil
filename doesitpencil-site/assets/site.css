@@ -5,8 +5,8 @@
   --dip-accent:#2b3c97; --dip-accent-soft:#e7eaf6; --dip-on-accent:#ffffff;
   --dip-good:#1f7a4d; --dip-good-bg:#dff1e6; --dip-bad:#c0392b; --dip-bad-bg:#f7e0dc;
   --dip-red:#ed2224; --dip-orange:#f36c21; --dip-yellow:#f6eb16; --dip-green:#46ab48; --dip-blue:#2b3c97;
-  --dip-display:"Montserrat","Public Sans",system-ui,sans-serif;
-  --dip-sans:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --dip-display:"Montserrat",system-ui,sans-serif;
+  --dip-sans:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --dip-bg:#12151b; --dip-fg:#e8ebf0; --dip-muted:#9aa3b0; --dip-line:#2b313c; --dip-soft:#1a1f27;
@@ -99,3 +99,18 @@
 .dip-cta .fine{font-size:12.5px;color:#9aa3b0;margin-top:10px}
 .dip-nav a.dip-join{background:#f6eb16;color:#111418}
 .dip-nav a.dip-join:hover{background:#fff36a;color:#111418}
+
+/* top CTA is a little tighter than the original full band */
+.dip-cta-top .dip-in{padding-block:28px 30px}
+.dip-cta-top h2{font-size:clamp(22px,2.8vw,28px)}
+.dip-cta-top .go{margin-top:16px}
+/* compact bottom CTA */
+.dip-cta-bottom{background:#111418;color:#e8ebf0;font-family:var(--dip-sans)}
+.dip-cta-bottom .dip-in{max-width:1120px;margin:0 auto;padding-block:18px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.dip-cta-bottom p{margin:0;line-height:1.5;max-width:70ch}
+.dip-cta-bottom b{color:#fff}
+.dip-cta-bottom .go{background:#f6eb16;color:#111418;font-weight:800;text-decoration:none;border-radius:9px;padding:10px 16px;white-space:nowrap}
+.dip-cta-bottom .go:hover{background:#fff36a}
+.dip-cta-bottom .go:focus-visible{outline:3px solid #fff;outline-offset:2px}
+body{font-variant-numeric:tabular-nums}

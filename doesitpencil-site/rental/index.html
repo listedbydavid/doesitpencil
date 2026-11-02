@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" href="../assets/favicon.png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <style>
@@ -22,8 +22,8 @@
   --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eef1f5; --line:#d9dee6;
   --fg:#111418; --muted:#5c6470; --accent:#2b3c97; --accent-soft:#e7eaf6;
   --good:#1f7a4d; --good-bg:#dff1e6; --warn:#9a6400; --warn-bg:#f8ecd2; --bad:#b03a2e; --bad-bg:#f7e0dc;
-  --f-ui:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-num:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --f-ui:"Montserrat",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"Montserrat",ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#12151b; --surface:#1a1f27; --surface-2:#212733; --line:#2b313c;
@@ -37,7 +37,7 @@
 body{background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:15px;line-height:1.45}
 .wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px;display:flex;flex-direction:column;gap:20px}
 header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
-h1{font-family:"Montserrat","Public Sans",sans-serif;font-weight:800;font-size:28px;line-height:1.1;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+h1{font-family:"Montserrat",sans-serif;font-weight:800;font-size:28px;line-height:1.1;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
 .sub{color:var(--muted);margin:4px 0 0;max-width:62ch}
 .savebar-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
@@ -93,6 +93,21 @@ tr.sub td{color:var(--muted);font-size:13px}
 </head>
 <body>
 <div id="dip-header"></div>
+<section class="dip-cta dip-cta-top" aria-labelledby="cta-top-h"><div class="dip-in">
+  <div>
+    <p class="eyebrow">Real Estate Cheat Codes community</p>
+    <h2 id="cta-top-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
+    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
+    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=rental-top" target="_blank" rel="noopener">Join the community on Skool →</a>
+    <p class="fine">See what's included and sign up on Skool.</p>
+  </div>
+  <ul>
+    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
+    <li>Monthly live community calls</li>
+    <li>The strategies top performers use to scale</li>
+    <li>A private network of investors, agents and developers</li>
+  </ul>
+</div></section>
 <div class="wrap">
   <header>
     <div>
@@ -207,6 +222,7 @@ tr.sub td{color:var(--muted);font-size:13px}
   </div>
 </div>
 
+<script src="../assets/tracking.js"></script>
 <script src="../assets/site.js"></script>
 <script>
 DIP.mountHeader("rental");
@@ -343,20 +359,10 @@ window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'rental',
 })();
 </script>
 
-<section class="dip-cta" aria-labelledby="cta-h"><div class="dip-in">
-  <div>
-    <p class="eyebrow">Real Estate Cheat Codes community</p>
-    <h2 id="cta-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
-    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
-    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=rental" target="_blank" rel="noopener">Join the community on Skool →</a>
-    <p class="fine">See what's included and sign up on Skool.</p>
-  </div>
-  <ul>
-    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
-    <li>Monthly live community calls</li>
-    <li>The strategies top performers use to scale</li>
-    <li>A private network of investors, agents and developers</li>
-  </ul>
+
+<section class="dip-cta-bottom" aria-label="Join the community"><div class="dip-in">
+  <p><b>Want help making the numbers work?</b> Get ongoing support and lessons in the private Real Estate Cheat Codes community.</p>
+  <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=rental-bottom" target="_blank" rel="noopener">Join on Skool →</a>
 </div></section>
 <footer class="dip-foot"><div class="dip-in">
 <p class="dip-legal"><b>Educational use only.</b> Does It Pencil? is a free educational tool, not financial, investment, legal, tax, lending or real estate advice. Results are estimates based on your inputs and are not guaranteed. Consult licensed professionals before making any decision. By using this site you agree to the <a href="../terms/index.html">Terms of Use</a>, including its disclaimer of warranties, limitation of liability, and hold harmless and indemnification provisions.</p>

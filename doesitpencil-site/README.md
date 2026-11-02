@@ -10,10 +10,21 @@ rental/index.html          Rental Cash Flow calculator
 flip-vs-build/index.html   Flip vs. Build calculator (PDF/JPG report export)
 saved/index.html           My saved calculations: search, rename, duplicate, delete, backup/restore
 assets/site.js             Shared header, saved-calculations store (window.DIP), save bar
+assets/tracking.js         Google tag + Meta Pixel IDs (blank = off)
 assets/site.css            Shared header / save bar / list styles (all classes prefixed dip-)
 assets/*.png               RECC logos, favicon
 netlify.toml               Publish the repo root, no build command
 ```
+
+## Tracking (Google + Meta)
+
+Edit `assets/tracking.js` and paste the IDs:
+
+```js
+window.DIP_TRACKING = { googleTagId: 'G-XXXXXXXXXX', metaPixelId: '123456789012345' };
+```
+
+Events: page views, `join_community_click` (Meta standard event `Lead`), `calculation_saved`, `report_download`.
 
 ## Saved calculations
 

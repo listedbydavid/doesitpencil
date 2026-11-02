@@ -123,7 +123,7 @@
       if(!label.value.trim())label.value=(opts.defaultLabel&&opts.defaultLabel(state))||'Untitled';
       const rec=store.save({id:asNew?null:currentId,calc:opts.calc,label:label.value,state,summary:opts.summarize?opts.summarize(state):null});
       if(!rec){status.textContent='Could not save: this browser is blocking storage (private window or storage turned off).';return}
-      currentId=rec.id;savedAt=rec.updatedAt;dirty=false;setUrl(currentId);fillPicker();setStatus();
+      currentId=rec.id;savedAt=rec.updatedAt;dirty=false;track('calculation_saved',{calculator:opts.calc});setUrl(currentId);fillPicker();setStatus();
       const b=$(asNew?'dip-saveas':'dip-save'),t=b.textContent;b.textContent=asNew?'Saved as new':'Saved';setTimeout(()=>b.textContent=t,1200);
     }
     function open(id){
@@ -142,5 +142,72 @@
     return {changed(){if(currentId&&!dirty){dirty=true;setStatus()}},open,get currentId(){return currentId},get label(){return label.value}};
   }
 
-  window.DIP={CALCS,store,href,download,mountHeader,mountSaveBar,esc,ROOT};
+  /* ---------- Number inputs with thousands separators ----------
+     Every <input type="number"> is turned into a text box that shows commas (1,025,000)
+     and keeps decimals (1.75). Calculator code keeps reading .value as a plain number string. */
+  const VDESC=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+  function fmtNum(raw){
+    let s=String(raw??'').replace(/[^0-9.\-]/g,'');
+    if(s==='')return '';
+    const neg=s.startsWith('-');s=s.replace(/-/g,'');
+    const dot=s.indexOf('.');
+    let int=dot>=0?s.slice(0,dot):s, dec=dot>=0?'.'+s.slice(dot+1).replace(/\./g,''):'';
+    int=int.replace(/^0+(?=\d)/,'');
+    int=int.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    return (neg?'-':'')+(int||(dec?'0':''))+dec;
+  }
+  function enhanceNumber(el){
+    if(el.dataset.dipNum)return;
+    el.dataset.dipNum='1';
+    const start=VDESC.get.call(el);
+    el.type='text';el.setAttribute('inputmode','decimal');el.setAttribute('autocomplete','off');
+    Object.defineProperty(el,'type',{configurable:true,get(){return 'number'},set(){}});
+    Object.defineProperty(el,'value',{configurable:true,
+      get(){return VDESC.get.call(this).replace(/,/g,'')},
+      set(v){VDESC.set.call(this,fmtNum(v))}});
+    VDESC.set.call(el,fmtNum(start));
+  }
+  // Reformat while typing, keeping the cursor next to the same digit.
+  document.addEventListener('input',e=>{
+    const el=e.target;if(!el||!el.dataset||!el.dataset.dipNum)return;
+    const cur=VDESC.get.call(el),pos=el.selectionStart??cur.length;
+    const before=cur.slice(0,pos).replace(/[^0-9.\-]/g,'').length;
+    const next=fmtNum(cur);
+    if(next===cur)return;
+    VDESC.set.call(el,next);
+    let i=0,count=0;while(i<next.length&&count<before){if(/[0-9.\-]/.test(next[i]))count++;i++}
+    try{el.setSelectionRange(i,i)}catch(err){}
+  },true);
+  function enhanceAll(root){(root||document).querySelectorAll('input[type="number"]').forEach(enhanceNumber)}
+  enhanceAll();
+  new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType!==1)continue;if(n.matches&&n.matches('input[type="number"]'))enhanceNumber(n);else if(n.querySelectorAll)enhanceAll(n)}})
+    .observe(document.documentElement,{childList:true,subtree:true});
+
+  /* ---------- Google tag + Meta Pixel ----------
+     Fill in the IDs in assets/tracking.js. Nothing loads while they are blank. */
+  const T=window.DIP_TRACKING||{};
+  const gIds=[].concat(T.googleTagIds||T.googleTagId||[]).filter(Boolean);
+  if(gIds.length){
+    const sc=document.createElement('script');sc.async=true;sc.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(gIds[0]);document.head.appendChild(sc);
+    window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};
+    gtag('js',new Date());gIds.forEach(id=>gtag('config',id));
+  }
+  if(T.metaPixelId){
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+      s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init',String(T.metaPixelId));fbq('track','PageView');
+  }
+  function track(name,params,metaStd){
+    try{if(window.gtag)gtag('event',name,params||{})}catch(e){}
+    try{if(window.fbq){if(metaStd)fbq('track',metaStd,params||{});else fbq('trackCustom',name,params||{})}}catch(e){}
+  }
+  // Clicks on any Skool community link count as a lead.
+  document.addEventListener('click',e=>{
+    const a=e.target.closest&&e.target.closest('a[href*="skool.com"]');
+    if(a){const where=(a.closest('.dip-cta-top')&&'top')||(a.closest('.dip-cta-bottom')&&'bottom')||(a.closest('.dip-header')&&'header')||'page';
+      track('join_community_click',{location:where,page:location.pathname},'Lead');}
+  },true);
+
+  window.DIP={CALCS,store,href,download,mountHeader,mountSaveBar,esc,ROOT,track,fmtNum};
 })();

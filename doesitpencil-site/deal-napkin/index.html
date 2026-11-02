@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" href="../assets/favicon.png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <style>
@@ -23,7 +23,7 @@
   --green:#1f7a4d; --green-bg:#e3f4ea; --green-ring:#46ab48;
   --yellow:#8a5a00; --yellow-bg:#fdf6d8; --yellow-ring:#f2c200;
   --red:#b3261e; --red-bg:#fbe5e2; --red-ring:#ed2224;
-  --num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --num:"Montserrat",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#12151b; --card:#1a1f27; --field:#212733; --line:#2b313c; --fg:#e8ebf0; --muted:#9aa3b0; --accent:#9aa8ff;
@@ -32,9 +32,9 @@
   --bg:#12151b; --card:#1a1f27; --field:#212733; --line:#2b313c; --fg:#e8ebf0; --muted:#9aa3b0; --accent:#9aa8ff;
   --green:#6fdc9c; --green-bg:#163327; --yellow:#f2cf5b; --yellow-bg:#352c10; --red:#ff8a7a; --red-bg:#3d1f1b; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:"Public Sans",system-ui,sans-serif;font-size:15px;line-height:1.45}
+body{background:var(--bg);color:var(--fg);font-family:"Montserrat",system-ui,sans-serif;font-size:15px;line-height:1.45}
 .wrap{max-width:1120px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
-h1{font-family:"Montserrat","Public Sans",sans-serif;font-weight:800;font-size:clamp(26px,3.6vw,34px);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1{font-family:"Montserrat",sans-serif;font-weight:800;font-size:clamp(26px,3.6vw,34px);letter-spacing:-.02em;margin:0;text-wrap:balance}
 .sub{color:var(--muted);margin:4px 0 0;max-width:64ch}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
@@ -88,10 +88,30 @@ tr.tot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
 .neg{color:var(--red)}
 .ex{font-size:12px;font-weight:700;color:var(--yellow);background:var(--yellow-bg);padding:2px 8px;border-radius:999px}
 .savecard{padding:12px 14px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);padding:0 4px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend b{color:var(--fg)}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.legend i.g{background:#46ab48}.legend i.y{background:#f6c90e}.legend i.r{background:#ed2224}
 </style>
 </head>
 <body>
 <div id="dip-header"></div>
+<section class="dip-cta dip-cta-top" aria-labelledby="cta-top-h"><div class="dip-in">
+  <div>
+    <p class="eyebrow">Real Estate Cheat Codes community</p>
+    <h2 id="cta-top-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
+    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
+    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=deal-napkin-top" target="_blank" rel="noopener">Join the community on Skool →</a>
+    <p class="fine">See what's included and sign up on Skool.</p>
+  </div>
+  <ul>
+    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
+    <li>Monthly live community calls</li>
+    <li>The strategies top performers use to scale</li>
+    <li>A private network of investors, agents and developers</li>
+  </ul>
+</div></section>
 
 
 <div class="wrap">
@@ -132,13 +152,6 @@ tr.tot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
             <label class="f" for="sellPct">Selling costs<div class="inp"><input id="sellPct" type="number" step="0.5" inputmode="decimal"><span>% ARV</span></div></label>
             <label class="f" for="contPct">Rehab contingency<div class="inp"><input id="contPct" type="number" step="1" inputmode="decimal"><span>%</span></div></label>
           </div>
-          <h3>What counts as green</h3>
-          <div class="fields">
-            <label class="f" for="greenPct">Profit at least<div class="inp"><input id="greenPct" type="number" step="1" inputmode="decimal"><span>% ARV</span></div></label>
-            <label class="f" for="minProfit">and at least<div class="inp"><span>$</span><input id="minProfit" type="number" step="5000" inputmode="decimal"></div></label>
-            <label class="f" for="cushionPct">Still breaks even if ARV drops<div class="inp"><input id="cushionPct" type="number" step="1" inputmode="decimal"><span>%</span></div></label>
-            <label class="f" for="redPct">Red below<div class="inp"><input id="redPct" type="number" step="1" inputmode="decimal"><span>% ARV</span></div></label>
-          </div>
           <p class="hint">Interest is figured on the full loan for every month you hold, which is conservative when rehab money is drawn over time. Selling costs cover agent commissions and seller closing costs.</p>
         </details>
       </section>
@@ -153,6 +166,11 @@ tr.tot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
           <p class="vmsg" id="vmsg"></p>
         </div>
       </div>
+      <div class="legend" aria-label="How the colors are set">
+        <span><i class="g"></i><b>Green</b> profit is 8% of ARV or more</span>
+        <span><i class="y"></i><b>Yellow</b> 6% to 7.99%</span>
+        <span><i class="r"></i><b>Red</b> 5.99% or less</span>
+      </div>
 
       <div class="offer">
         <div><div class="k">Max offer for green</div><div class="v" id="maxGreen"></div><div class="n" id="maxGreenN"></div></div>
@@ -162,7 +180,7 @@ tr.tot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
       </div>
 
       <section class="card">
-        <h2>The tests</h2>
+        <h2>Deal checks</h2>
         <ul class="checks" id="checks"></ul>
       </section>
 
@@ -174,14 +192,17 @@ tr.tot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
   </div>
 </div>
 
+<script src="../assets/tracking.js"></script>
 <script src="../assets/site.js"></script>
 <script>
 DIP.mountHeader("napkin");
 (function(){
 const $=id=>document.getElementById(id);
-const F=['price','arv','rehab','months','loanMode','loanPct','loanAmt','rate','points','holdMo','closePct','sellPct','contPct','greenPct','minProfit','cushionPct','redPct'];
-const EXAMPLE={price:600000,arv:925000,rehab:110000,months:6,loanMode:'pct',loanPct:90,loanAmt:684000,rate:11,points:2,holdMo:1200,
-  closePct:1.5,sellPct:6,contPct:10,greenPct:15,minProfit:50000,cushionPct:10,redPct:8};
+const F=['price','arv','rehab','months','loanMode','loanPct','loanAmt','rate','points','holdMo','closePct','sellPct','contPct'];
+// Fixed deal rules: profit as a share of ARV. Not user-editable.
+const GREEN=0.08, YELLOW=0.06;
+const EXAMPLE={price:615000,arv:925000,rehab:110000,months:6,loanMode:'pct',loanPct:90,loanAmt:684000,rate:11,points:2,holdMo:1200,
+  closePct:1.5,sellPct:6,contPct:10};
 const money=v=>(v<0?'−':'')+'$'+Math.round(Math.abs(v)).toLocaleString('en-US');
 const kmoney=v=>{const a=Math.abs(v);return (v<0?'−':'')+(a>=1e6?'$'+(a/1e6).toFixed(2)+'M':'$'+Math.round(a/1000)+'K')};
 const pct=(v,d=1)=>isFinite(v)?(v*100).toFixed(d)+'%':'—';
@@ -206,14 +227,8 @@ function model(d,priceOverride){
   const cushion=arv>0?1-beArv/arv:0;
   const rule70=0.7*arv-(+d.rehab||0);
   const roi=cash>0?profit/cash*12/months:NaN;
-  const tests={
-    margin:margin>=(+d.greenPct||0)/100,
-    dollars:profit>=(+d.minProfit||0),
-    cushion:cushion>=(+d.cushionPct||0)/100
-  };
-  const red=profit<0||margin<(+d.redPct||0)/100;
-  const color=red?'red':(tests.margin&&tests.dollars&&tests.cushion?'green':'yellow');
-  return {price,arv,months,rehab,closing,loan,points,interest,hold,selling,allIn,profit,cash,margin,beArv,cushion,rule70,roi,tests,color};
+  const color=margin>=GREEN?'green':margin>=YELLOW?'yellow':'red';
+  return {price,arv,months,rehab,closing,loan,points,interest,hold,selling,allIn,profit,cash,margin,beArv,cushion,rule70,roi,color};
 }
 function maxPrice(d,ok){ // highest price where ok(model) is true
   if(!ok(model(d,0)))return null;
@@ -235,7 +250,7 @@ function calc(){
   const g=maxPrice(d,x=>x.color==='green');
   const be=maxPrice(d,x=>x.profit>=0);
   let msg;
-  if(m.color==='green')msg=g!=null&&g>m.price?`You have room: it stays green up to about ${money(g)}.`:'It clears every test.';
+  if(m.color==='green')msg=g!=null&&g>m.price?`You have room: it stays green up to about ${money(g)}.`:'Profit clears 8% of ARV.';
   else if(g!=null&&m.price>0)msg=`Offer about ${money(m.price-g)} less (${money(g)}) to make it green.`;
   else msg='No purchase price makes this green with this ARV and rehab. Check the ARV or cut the rehab.';
   if(m.color==='red'&&m.profit<0)msg=`It loses ${money(-m.profit)} at this price. `+msg;
@@ -252,9 +267,8 @@ function calc(){
 
   const row=(ok,label,val)=>`<li class="${ok===true?'ok':ok===false?'no':'meh'}"><span class="ic">${ok===true?'✓':ok===false?'✕':'!'}</span><span>${label}</span><span class="val">${val}</span></li>`;
   $('checks').innerHTML=
-    row(m.tests.margin,`Profit is at least ${d.greenPct}% of ARV`,pct(m.margin))+
-    row(m.tests.dollars,`Profit is at least ${money(+d.minProfit||0)}`,kmoney(m.profit))+
-    row(m.tests.cushion,`Still breaks even if ARV drops ${d.cushionPct}%`,`breaks even at ${kmoney(m.beArv)} (−${Math.max(0,m.cushion*100).toFixed(0)}%)`)+
+    row(m.color==='green'?true:m.color==='yellow'?'meh':false,`Profit as a share of ARV`,pct(m.margin,2))+
+    row(m.cushion>=0.10?true:m.cushion>=0.05?'meh':false,`Room if ARV comes in low`,`breaks even at ${kmoney(m.beArv)} (−${Math.max(0,m.cushion*100).toFixed(1)}%)`)+
     row((+d.price||0)+(+d.rehab||0)<=0.7*m.arv?true:'meh',`70% rule: price + rehab ≤ 70% of ARV`,`max price ${kmoney(m.rule70)}`);
 
   const r=(a,b,c='')=>`<tr class="${c}"><td>${a}</td><td class="r ${b<0?'neg':''}">${money(b)}</td></tr>`;
@@ -280,20 +294,10 @@ window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'napkin',
 })();
 </script>
 
-<section class="dip-cta" aria-labelledby="cta-h"><div class="dip-in">
-  <div>
-    <p class="eyebrow">Real Estate Cheat Codes community</p>
-    <h2 id="cta-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
-    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
-    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=deal-napkin" target="_blank" rel="noopener">Join the community on Skool →</a>
-    <p class="fine">See what's included and sign up on Skool.</p>
-  </div>
-  <ul>
-    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
-    <li>Monthly live community calls</li>
-    <li>The strategies top performers use to scale</li>
-    <li>A private network of investors, agents and developers</li>
-  </ul>
+
+<section class="dip-cta-bottom" aria-label="Join the community"><div class="dip-in">
+  <p><b>Want help making the numbers work?</b> Get ongoing support and lessons in the private Real Estate Cheat Codes community.</p>
+  <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=deal-napkin-bottom" target="_blank" rel="noopener">Join on Skool →</a>
 </div></section>
 <footer class="dip-foot"><div class="dip-in">
 <p class="dip-legal"><b>Educational use only.</b> Does It Pencil? is a free educational tool, not financial, investment, legal, tax, lending or real estate advice. Results are estimates based on your inputs and are not guaranteed. Consult licensed professionals before making any decision. By using this site you agree to the <a href="../terms/index.html">Terms of Use</a>, including its disclaimer of warranties, limitation of liability, and hold harmless and indemnification provisions.</p>

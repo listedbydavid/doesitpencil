@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" href="../assets/favicon.png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -23,10 +23,10 @@
 :root{
   --bg:#eef1f4; --panel:#ffffff; --fg:#14222e; --muted:#5b6b78; --line:#d5dde4;
   --accent:#2b3c97; --accent-soft:#e7eaf6; --good:#1f7a4d; --bad:#c0392b; --field:#f7f9fb;
-  --display:"Montserrat","Public Sans",system-ui,sans-serif;
+  --display:"Montserrat",system-ui,sans-serif;
   --c-blue:#2b3c97; --c-green:#46ab48; --c-red:#ed2224; --c-orange:#f36c21; --c-yellow:#f6eb16;
-  --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --sans:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Montserrat",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f161c; --panel:#17212a; --fg:#e4ebf1; --muted:#93a4b2; --line:#2a3946;
@@ -149,6 +149,21 @@ table.ed input,table.ed select{padding:4px 5px;font-size:12px}
 </head>
 <body>
 <div id="dip-header"></div>
+<section class="dip-cta dip-cta-top" aria-labelledby="cta-top-h"><div class="dip-in">
+  <div>
+    <p class="eyebrow">Real Estate Cheat Codes community</p>
+    <h2 id="cta-top-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
+    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
+    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=flip-vs-build-top" target="_blank" rel="noopener">Join the community on Skool →</a>
+    <p class="fine">See what's included and sign up on Skool.</p>
+  </div>
+  <ul>
+    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
+    <li>Monthly live community calls</li>
+    <li>The strategies top performers use to scale</li>
+    <li>A private network of investors, agents and developers</li>
+  </ul>
+</div></section>
 <div class="bar">
   <div id="dip-savebar"></div>
   <div class="tools">
@@ -174,6 +189,7 @@ table.ed input,table.ed select{padding:4px 5px;font-size:12px}
 <p class="fine">Does It Pencil? is a free tool from Real Estate Cheat Codes, a D &amp; A Ventures LLC company. Results are estimates for comparing options, not financial, legal or tax advice, and not a guarantee of results. Your inputs stay in your browser.</p>
 </div></section>
 
+<script src="../assets/tracking.js"></script>
 <script src="../assets/site.js"></script>
 <script>
 DIP.mountHeader("flip");
@@ -619,6 +635,7 @@ inputsEl.addEventListener('click',e=>{
 const status=m=>{document.getElementById('status').textContent=m};
 const slug=()=>(S.deal.address||'deal').replace(/[^\w]+/g,'-').replace(/^-|-$/g,'');
 async function save(filename,data){
+  DIP.track('report_download',{calculator:'flip',format:filename.split('.').pop()});
   const r=await DIP.download(filename,data);status(r==='declined'?'Download cancelled.':'Downloaded '+filename);
 }
 async function capture(onlyFirst){
@@ -669,20 +686,10 @@ window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'flip',
     return {headline:'Best: '+K(rs[bi].profit)+' profit',detail:K(+st.deal.purchase||0)+' purchase · '+st.options.length+' option'+(st.options.length===1?'':'s')+' · best is '+(st.options[bi]?.name||''),tone:rs[bi].profit>=0?'good':'bad'}}});
 </script>
 
-<section class="dip-cta" aria-labelledby="cta-h"><div class="dip-in">
-  <div>
-    <p class="eyebrow">Real Estate Cheat Codes community</p>
-    <h2 id="cta-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
-    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
-    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=flip-vs-build" target="_blank" rel="noopener">Join the community on Skool →</a>
-    <p class="fine">See what's included and sign up on Skool.</p>
-  </div>
-  <ul>
-    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
-    <li>Monthly live community calls</li>
-    <li>The strategies top performers use to scale</li>
-    <li>A private network of investors, agents and developers</li>
-  </ul>
+
+<section class="dip-cta-bottom" aria-label="Join the community"><div class="dip-in">
+  <p><b>Want help making the numbers work?</b> Get ongoing support and lessons in the private Real Estate Cheat Codes community.</p>
+  <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=flip-vs-build-bottom" target="_blank" rel="noopener">Join on Skool →</a>
 </div></section>
 <footer class="dip-foot"><div class="dip-in">
 <p class="dip-legal"><b>Educational use only.</b> Does It Pencil? is a free educational tool, not financial, investment, legal, tax, lending or real estate advice. Results are estimates based on your inputs and are not guaranteed. Consult licensed professionals before making any decision. By using this site you agree to the <a href="../terms/index.html">Terms of Use</a>, including its disclaimer of warranties, limitation of liability, and hold harmless and indemnification provisions.</p>
