@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://doesitpencil.org/sitemap.xml

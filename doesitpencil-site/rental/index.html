@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rental Cash Flow Calculator · Does It Pencil?</title>
+<meta name="description" content="Free rental property calculator: monthly cash flow after a refi, DSCR, cap rate, break-even price and rent, and year-1 tax savings from cost segregation. Save and label your deals.">
+<meta property="og:title" content="Rental Cash Flow Calculator · Does It Pencil?">
+<meta property="og:description" content="Free rental property calculator: monthly cash flow after a refi, DSCR, cap rate, break-even price and rent, and year-1 tax savings from cost segregation. Save and label your deals.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://doesitpencil.org/rental/">
+<link rel="canonical" href="https://doesitpencil.org/rental/">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: ledger-style two-column tool — inputs on the left, a sticky verdict sheet on the right; stacks on phones. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eef1f5; --line:#d9dee6;
+  --fg:#111418; --muted:#5c6470; --accent:#2b3c97; --accent-soft:#e7eaf6;
+  --good:#1f7a4d; --good-bg:#dff1e6; --warn:#9a6400; --warn-bg:#f8ecd2; --bad:#b03a2e; --bad-bg:#f7e0dc;
+  --f-ui:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151b; --surface:#1a1f27; --surface-2:#212733; --line:#2b313c;
+  --fg:#e8ebf0; --muted:#9aa3b0; --accent:#9aa8ff; --accent-soft:#232a52;
+  --good:#5fd394; --good-bg:#16352a; --warn:#e8b55a; --warn-bg:#3a2e14; --bad:#f08a7e; --bad-bg:#3d1f1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151b; --surface:#1a1f27; --surface-2:#212733; --line:#2b313c;
+  --fg:#e8ebf0; --muted:#9aa3b0; --accent:#9aa8ff; --accent-soft:#232a52;
+  --good:#5fd394; --good-bg:#16352a; --warn:#e8b55a; --warn-bg:#3a2e14; --bad:#f08a7e; --bad-bg:#3d1f1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:15px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:"Montserrat","Public Sans",sans-serif;font-weight:800;font-size:28px;line-height:1.1;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;max-width:62ch}
+.savebar-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+.inputs{display:flex;flex-direction:column;gap:16px;min-width:0}
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0;font-weight:600}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+.inp{display:flex;align-items:center;background:var(--surface-2);border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.inp:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.inp span{padding:0 8px;color:var(--muted);font-family:var(--f-num);font-size:13px}
+.inp input,.inp select{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font:500 15px var(--f-num);padding:8px 8px;outline:none;font-variant-numeric:tabular-nums}
+.inp input[type=text]{font-family:var(--f-ui)}
+.units{display:flex;flex-direction:column;gap:8px}
+.unit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,150px) 34px;gap:8px;align-items:center}
+button{font:600 14px var(--f-ui);border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:8px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button.icon{padding:6px 0;width:34px;color:var(--muted)}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--fg)}
+.toggle input{width:18px;height:18px;accent-color:var(--accent)}
+
+.results{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:880px){.results{position:static}}
+.verdict{border-radius:12px;padding:18px 20px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.pill{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+.pill.good{background:var(--good-bg);color:var(--good)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:var(--bad-bg);color:var(--bad)}
+.big{font:600 34px/1.1 var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.big small{font-size:15px;color:var(--muted);font-weight:500}
+.verdict p{margin:0;color:var(--muted);font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.kpi{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .k{font-size:12px;color:var(--muted)}
+.kpi .v{font:600 18px var(--f-num);font-variant-numeric:tabular-nums}
+.kpi .n{font-size:12px;color:var(--muted)}
+.v.good{color:var(--good)} .v.bad{color:var(--bad)} .v.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:6px 0;border-bottom:1px solid var(--line)}
+td.r{text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:12px}
+tr.tot td{font-weight:700;border-bottom:0;border-top:2px solid var(--fg)}
+tr.sub td{color:var(--muted);font-size:13px}
+.saved{display:flex;flex-direction:column;gap:6px}
+.saved-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;font-size:14px;padding:6px 0;border-bottom:1px solid var(--line)}
+.saved-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.saved-row .cf{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.example{font-size:12px;font-weight:600;color:var(--warn);background:var(--warn-bg);padding:2px 8px;border-radius:999px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div id="dip-header"></div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Does this rental pencil?</h1>
+      <p class="sub">Monthly cash flow after the refi, the numbers a DSCR lender checks, and the year-1 tax savings from cost segregation.</p>
+    </div>
+  </header>
+  <div class="savebar-card"><div id="dip-savebar"></div></div>
+
+  <div class="grid">
+    <div class="inputs">
+      <section class="card">
+        <h2>Purchase</h2>
+        <div class="fields">
+          <label class="f">Purchase price<div class="inp"><span>$</span><input id="price" type="number" step="5000"></div></label>
+          <label class="f">Closing costs<div class="inp"><input id="closePct" type="number" step="0.1"><span>%</span></div></label>
+          <label class="f">Make-ready / repairs<div class="inp"><span>$</span><input id="rehab" type="number" step="1000"></div></label>
+        </div>
+        <p class="hint" id="allIn"></p>
+      </section>
+
+      <section class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <h2>Rents (monthly, by unit)</h2>
+          <span id="exampleTag" class="example">Sample deal. Replace with your numbers.</span>
+        </div>
+        <div id="units" class="units"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button id="addUnit">Add unit</button>
+          <label class="f" style="flex-direction:row;align-items:center;gap:8px">Other income<div class="inp" style="width:130px"><span>$</span><input id="otherInc" type="number" step="25"></div></label>
+          <label class="f" style="flex-direction:row;align-items:center;gap:8px">Vacancy<div class="inp" style="width:90px"><input id="vacancy" type="number" step="0.5"><span>%</span></div></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Operating expenses</h2>
+        <div class="fields">
+          <label class="f">Base tax rate (Prop 13)<div class="inp"><input id="taxRate" type="number" step="0.01"><span>%</span></div></label>
+          <label class="f">Local bonds / add-ons<div class="inp"><input id="taxAdd" type="number" step="0.01"><span>%</span></div></label>
+          <label class="f">Direct assessments<div class="inp"><span>$</span><input id="taxFixed" type="number" step="50"><span>/yr</span></div></label>
+          <label class="f">Insurance / yr<div class="inp"><span>$</span><input id="ins" type="number" step="100"></div></label>
+          <label class="f">Repairs &amp; maint.<div class="inp"><input id="maint" type="number" step="0.5"><span>% rent</span></div></label>
+          <label class="f">CapEx reserve<div class="inp"><input id="capex" type="number" step="0.5"><span>% rent</span></div></label>
+          <label class="f">Property management<div class="inp"><input id="mgmt" type="number" step="0.5"><span>% rent</span></div></label>
+          <label class="f">Leasing fee<div class="inp"><input id="leaseFee" type="number" step="5"><span>% 1 mo</span></div></label>
+          <label class="f">Owner-paid utilities<div class="inp"><span>$</span><input id="util" type="number" step="25"><span>/mo</span></div></label>
+          <label class="f">HOA<div class="inp"><span>$</span><input id="hoa" type="number" step="25"><span>/mo</span></div></label>
+          <label class="f">Other<div class="inp"><span>$</span><input id="otherExp" type="number" step="25"><span>/mo</span></div></label>
+        </div>
+        <p class="hint" id="taxCalc"></p>
+        <p class="hint">Property tax is reassessed to the purchase price when the new owners buy (Prop 13): 1% base plus the parcel's local bond rate and fixed direct assessments from the current tax bill. Management is charged on collected rent; the leasing fee is a share of one month's rent per new tenant, spread over an average 2-year tenancy. Set management to 0% if you'll self-manage.</p>
+      </section>
+
+      <section class="card">
+        <h2>Financing</h2>
+        <div class="fields">
+          <label class="f">Bought with<div class="inp"><select id="buyMode"><option value="cashrefi">Cash/HELOC, then refi</option><option value="loan">Purchase loan</option></select></div></label>
+          <label class="f">Loan-to-value<div class="inp"><input id="ltv" type="number" step="1"><span>%</span></div></label>
+          <label class="f">Rate<div class="inp"><input id="rate" type="number" step="0.125"><span>%</span></div></label>
+          <label class="f">Payment type<div class="inp"><select id="io"><option value="1">Interest-only</option><option value="0">30-yr amortizing</option></select></div></label>
+          <label class="f">Loan costs<div class="inp"><input id="loanCostPct" type="number" step="0.25"><span>% loan</span></div></label>
+        </div>
+        <div class="fields" id="bridgeFields">
+          <label class="f">HELOC rate<div class="inp"><input id="helocRate" type="number" step="0.125"><span>%</span></div></label>
+          <label class="f">Months until refi<div class="inp"><input id="bridgeMo" type="number" step="1"><span>mo</span></div></label>
+        </div>
+        <p class="hint">DSCR lenders usually want rent ÷ PITIA of at least 1.15–1.25, with the best pricing at 55% LTV or less.</p>
+      </section>
+
+      <section class="card">
+        <h2>Tax (cost segregation)</h2>
+        <div class="fields">
+          <label class="f">Land share of value<div class="inp"><input id="landPct" type="number" step="1"><span>%</span></div></label>
+          <label class="f">Reclassified by cost seg<div class="inp"><input id="csPct" type="number" step="1"><span>% bldg</span></div></label>
+          <label class="f">Bonus depreciation<div class="inp"><input id="bonusPct" type="number" step="10"><span>%</span></div></label>
+          <label class="f">Federal tax bracket<div class="inp"><input id="fedRate" type="number" step="1"><span>%</span></div></label>
+          <label class="f">Months owned in year 1<div class="inp"><input id="months" type="number" step="1" min="1" max="12"><span>mo</span></div></label>
+        </div>
+        <label class="toggle"><input id="reps" type="checkbox"> A spouse qualifies as a real estate professional and materially participates</label>
+        <p class="hint">Land share comes from the assessor split or an appraisal. Cost seg studies usually move 20–35% of the building into 5-, 7- and 15-year property. Without real estate professional status, the loss is passive and is usually suspended rather than offsetting W-2 or business income. California doesn't follow federal bonus depreciation, so this shows federal savings only.</p>
+      </section>
+    </div>
+
+    <aside class="results" aria-live="polite">
+      <div class="verdict">
+        <span id="pill" class="pill good">Pencils</span>
+        <div class="big" id="cfBig">$0 <small>/ month</small></div>
+        <p id="verdictTxt"></p>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><span class="k">Break-even price</span><span class="v" id="bePrice"></span><span class="n" id="bePriceN"></span></div>
+        <div class="kpi"><span class="k">Break-even rent</span><span class="v" id="beRent"></span><span class="n" id="beRentN"></span></div>
+        <div class="kpi"><span class="k">DSCR (rent ÷ PITIA)</span><span class="v" id="dscr"></span><span class="n">Lender minimum 1.15</span></div>
+        <div class="kpi"><span class="k">Cap rate</span><span class="v" id="cap"></span><span class="n" id="capN"></span></div>
+        <div class="kpi"><span class="k">Cash left in deal</span><span class="v" id="cashIn"></span><span class="n" id="cashInN"></span></div>
+        <div class="kpi"><span class="k">Cash-on-cash</span><span class="v" id="coc"></span><span class="n">Before tax savings</span></div>
+      </div>
+
+      <section class="card">
+        <h2>Monthly, after refi</h2>
+        <table id="pl"></table>
+      </section>
+
+      <section class="card">
+        <h2>Year 1 with tax savings</h2>
+        <table id="tax"></table>
+        <p class="hint" id="taxNote"></p>
+      </section>
+
+    </aside>
+  </div>
+</div>
+
+<script src="../assets/site.js"></script>
+<script>
+DIP.mountHeader("rental");
+(function(){
+const $=id=>document.getElementById(id);
+const money=(n,d=0)=>(n<0?'−':'')+'$'+Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d});
+const pct=(n,d=1)=>(isFinite(n)?n.toFixed(d):'—')+'%';
+const FIELDS=['price','closePct','rehab','otherInc','vacancy','taxRate','taxAdd','taxFixed','ins','maint','capex','mgmt','leaseFee','util','hoa','otherExp','buyMode','ltv','rate','io','loanCostPct','helocRate','bridgeMo','landPct','csPct','bonusPct','fedRate','months'];
+
+const EXAMPLE={name:'',example:true,price:1350000,closePct:1.5,rehab:0,otherInc:0,vacancy:4,taxRate:1.0,taxAdd:0.2,taxFixed:400,ins:3600,maint:5,capex:5,mgmt:8,leaseFee:50,util:250,hoa:0,otherExp:50,
+  buyMode:'cashrefi',ltv:55,rate:7.0,io:'1',loanCostPct:1.5,helocRate:8.0,bridgeMo:6,landPct:55,csPct:25,bonusPct:100,fedRate:37,months:10,reps:true,
+  units:[{l:'1 bd / 1 ba',r:2100},{l:'2 bd / 1 ba',r:2750},{l:'3 bd / 2 ba',r:3700}]};
+
+let units=[];
+function renderUnits(){
+  const box=$('units');box.innerHTML='';
+  units.forEach((u,i)=>{
+    const row=document.createElement('div');row.className='unit';
+    row.innerHTML=`<div class="inp"><input type="text" id="ul${i}" value="${(u.l||'').replace(/"/g,'&quot;')}" aria-label="Unit ${i+1} name"></div>
+      <div class="inp"><span>$</span><input type="number" step="25" id="ur${i}" value="${u.r||0}" aria-label="Unit ${i+1} rent"></div>
+      <button class="icon" aria-label="Remove unit ${i+1}" data-i="${i}">✕</button>`;
+    box.appendChild(row);
+  });
+  box.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{readUnits();markEdited();calc();}));
+  box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{units.splice(+b.dataset.i,1);renderUnits();markEdited();calc();}));
+}
+function readUnits(){units=units.map((u,i)=>({l:$('ul'+i).value,r:+$('ur'+i).value||0}));}
+$('addUnit').onclick=()=>{readUnits();units.push({l:'Unit '+(units.length+1),r:0});renderUnits();markEdited();calc();};
+
+function load(d){d={taxAdd:0,taxFixed:0,leaseFee:0,...d};FIELDS.forEach(k=>{if(d[k]!==undefined)$(k).value=d[k];});$('reps').checked=!!d.reps;units=(d.units||[]).map(u=>({...u}));$('exampleTag').hidden=!d.example;$('bridgeFields').hidden=$('buyMode').value!=='cashrefi';renderUnits();calc();}
+function snapshot(){readUnits();const d={name:(window.__dipBar&&window.__dipBar.label)||'',reps:$('reps').checked,units:units.map(u=>({...u}))};FIELDS.forEach(k=>d[k]=$(k).type==='number'?+$(k).value:$(k).value);return d;}
+function markEdited(){$('exampleTag').hidden=true;window.__dipBar&&window.__dipBar.changed();}
+
+function pmt(L,ratePct,io){const r=ratePct/100/12;if(L<=0)return 0;if(io)return L*r;if(r===0)return L/360;return L*r/(1-Math.pow(1+r,-360));}
+function yr1Interest(L,ratePct,io,m){const r=ratePct/100/12;if(io)return L*r*m;let b=L,p=pmt(L,ratePct,false),t=0;for(let i=0;i<m;i++){const it=b*r;t+=it;b-=p-it;}return t;}
+
+function model(v,priceOverride,rentOverride){
+  const P=priceOverride??v.price;
+  const gross=(rentOverride??v.units.reduce((s,u)=>s+u.r,0))+v.otherInc;
+  const egi=gross*(1-v.vacancy/100);
+  const taxYr=P*((v.taxRate||0)+(v.taxAdd||0))/100+(v.taxFixed||0);
+  const tax=taxYr/12, ins=v.ins/12;
+  const maint=gross*v.maint/100, capex=gross*v.capex/100, mgmt=egi*v.mgmt/100;
+  const leasing=(gross-(v.otherInc||0))*(v.leaseFee||0)/100/24;
+  const opex=tax+ins+maint+capex+mgmt+leasing+v.util+v.hoa+v.otherExp;
+  const noi=egi-opex;
+  const loan=P*v.ltv/100;
+  const debt=pmt(loan,v.rate,v.io==='1');
+  const cf=noi-debt;
+  const closing=P*v.closePct/100, loanCosts=loan*v.loanCostPct/100;
+  const bridge=v.buyMode==='cashrefi'?(P+closing+v.rehab)*v.helocRate/100*v.bridgeMo/12:0;
+  const cashIn=P+closing+v.rehab+loanCosts-loan;
+  const pitia=debt+tax+ins+v.hoa;
+  return {P,gross,egi,taxYr,tax,ins,maint,capex,mgmt,leasing,opex,noi,loan,debt,cf,closing,loanCosts,bridge,cashIn,pitia,
+    dscr:pitia>0?gross/pitia:Infinity, cap:P>0?noi*12/P*100:0, coc:cashIn>0?cf*12/cashIn*100:Infinity};
+}
+
+function calc(){
+  readUnits();const v=snapshot();const m=model(v);
+  // break-evens (cash flow is linear in price and in rent)
+  const m2=model(v,v.price+10000);const slopeP=(m2.cf-m.cf)/10000;const bePrice=slopeP<0?v.price-m.cf/slopeP:NaN;
+  const r0=v.units.reduce((s,u)=>s+u.r,0);const m3=model(v,null,r0+1000);const slopeR=(m3.cf-m.cf)/1000;const beRent=slopeR>0?r0-m.cf/slopeR:NaN;
+
+  const pill=$('pill');
+  if(m.cf>=0){pill.className='pill good';pill.textContent='Pencils';}
+  else if(m.cf>=-300){pill.className='pill warn';pill.textContent='Close to break-even';}
+  else{pill.className='pill bad';pill.textContent="Doesn't pencil";}
+  $('cfBig').innerHTML=`${money(m.cf)} <small>/ month after refi</small>`;
+  $('verdictTxt').textContent=m.cf>=0
+    ?`Rents cover the loan and all expenses with ${money(m.cf*12)} a year to spare.`
+    :`Holding costs ${money(-m.cf*12)} a year more than the rent brings in. To break even, the price needs to be about ${isFinite(bePrice)?money(bePrice):'—'} or the rent about ${isFinite(beRent)?money(beRent):'—'}/mo.`;
+
+  const set=(id,txt,cls)=>{const el=$(id);el.textContent=txt;el.className='v'+(cls?' '+cls:'');};
+  set('bePrice',isFinite(bePrice)?money(Math.round(bePrice/1000)*1000):'—',isFinite(bePrice)?(bePrice>=v.price?'good':'bad'):'');
+  $('bePriceN').textContent=isFinite(bePrice)?(bePrice>=v.price?`${money(bePrice-v.price)} of room over price`:`${money(v.price-bePrice)} under asking`):'';
+  set('beRent',isFinite(beRent)?money(beRent):'—',isFinite(beRent)?(beRent<=r0?'good':'bad'):'');
+  $('beRentN').textContent=isFinite(beRent)?`vs ${money(r0)} entered`:'';
+  set('dscr',isFinite(m.dscr)?m.dscr.toFixed(2):'—',m.dscr>=1.25?'good':m.dscr>=1.15?'warn':'bad');
+  $('allIn').textContent=`All-in at close: ${money(v.price+m.closing+v.rehab)} (price ${money(v.price)} + closing ${money(m.closing)} + repairs ${money(v.rehab)}).`;
+  $('taxCalc').textContent=`New owner's property tax: ${money(m.taxYr)}/yr (${money(m.tax)}/mo), an effective ${pct(v.price>0?m.taxYr/v.price*100:0,2)} of the purchase price.`;
+  set('cap',pct(m.cap,2));$('capN').textContent=`NOI ${money(m.noi*12)}/yr`;
+  set('cashIn',money(m.cashIn));$('cashInN').textContent=v.buyMode==='cashrefi'?`After refi; ${money(v.price+m.closing+v.rehab)} out of pocket at close`:'Down payment + costs';
+  set('coc',isFinite(m.coc)?pct(m.coc,1):'—',m.coc>=0?'':'bad');
+
+  const row=(a,b,c='')=>`<tr class="${c}"><td>${a}</td><td class="r">${b}</td></tr>`;
+  $('pl').innerHTML=
+    row('Gross rent',money(m.gross))+row(`Vacancy (${v.vacancy}%)`,money(m.egi-m.gross),'sub')+
+    row(`Property tax (reassessed at ${money(m.P)})`,money(-m.tax),'sub')+row('Insurance',money(-m.ins),'sub')+
+    row('Repairs + CapEx',money(-(m.maint+m.capex)),'sub')+
+    row(`Property management (${v.mgmt}%)`,money(-m.mgmt),'sub')+(m.leasing?row('Leasing fees (avg)',money(-m.leasing),'sub'):'')+
+    row('Utilities, HOA, other',money(-(v.util+v.hoa+v.otherExp)),'sub')+
+    row('Net operating income',money(m.noi))+
+    row(`Loan payment (${money(m.loan)} at ${v.rate}%${v.io==='1'?', interest-only':''})`,money(-m.debt),'sub')+
+    row('Cash flow',money(m.cf),'tot');
+
+  // Year-1 tax
+  const mo=Math.min(12,Math.max(1,v.months||12));
+  const basis=(v.price+m.closing+v.rehab)*(1-v.landPct/100);
+  const cs=basis*v.csPct/100, bonus=cs*v.bonusPct/100;
+  const csRest=(cs-bonus)/7*(mo/12);
+  const sl=(basis-cs)/27.5*((mo-0.5)/12);
+  const depCS=bonus+csRest+sl;
+  const depSL=basis/27.5*((mo-0.5)/12);
+  const interest=yr1Interest(m.loan,v.rate,v.io==='1',mo);
+  const cashOps=(m.noi*mo)-interest-m.bridge; // taxable before depreciation
+  const cashFlowY1=m.cf*mo-m.bridge;
+  const lossCS=Math.min(0,cashOps-depCS), lossSL=Math.min(0,cashOps-depSL);
+  const rate=v.fedRate/100;
+  const saveCS=v.reps?-lossCS*rate:0, saveSL=v.reps?-lossSL*rate:0;
+  $('tax').innerHTML=
+    row(`Cash flow, ${mo} months`,money(m.cf*mo))+
+    (m.bridge?row(`HELOC interest before refi (${v.bridgeMo} mo)`,money(-m.bridge),'sub'):'')+
+    row('Depreciation with cost seg',money(depCS),'sub')+
+    row('Paper loss for taxes',money(lossCS),'sub')+
+    row(`Federal tax savings (${v.fedRate}%)`,money(saveCS))+
+    row('Year-1 net benefit',money(cashFlowY1+saveCS),'tot')+
+    row('Same deal without cost seg',money(cashFlowY1+saveSL),'sub');
+  $('taxNote').textContent=v.reps
+    ?`Estimate only: depreciable basis ${money(basis)}, ${money(bonus)} taken as bonus depreciation in year 1. Recapture applies on sale. Confirm with a cost seg firm and your CPA.`
+    :`Without real estate professional status the ${money(-lossCS)} loss is usually passive and carries forward, so no year-1 savings are counted. Check the box if you or a spouse will qualify.`;
+}
+
+FIELDS.forEach(k=>$(k).addEventListener('input',()=>{if(k!=='dealName')markEdited();calc();}));
+$('reps').addEventListener('change',()=>{markEdited();calc();});
+$('buyMode').addEventListener('change',()=>{$('bridgeFields').hidden=$('buyMode').value!=='cashrefi';markEdited();calc();});
+load(EXAMPLE);
+const BLANK={...EXAMPLE,name:'',example:false,price:0,units:[{l:'Unit 1',r:0}]};
+window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'rental',
+  getState:snapshot,
+  setState:d=>load({...d,example:false}),
+  reset:()=>load(BLANK),
+  defaultLabel:()=>'Rental at '+money(+$('price').value||0),
+  summarize:d=>{const m=model(d);return {headline:money(m.cf)+'/mo',detail:money(d.price)+' · '+(d.units||[]).length+' unit'+((d.units||[]).length===1?'':'s')+' · DSCR '+(isFinite(m.dscr)?m.dscr.toFixed(2):'—'),tone:m.cf>=0?'good':'bad'}}});
+})();
+</script>
+
+<footer class="dip-foot"><div class="dip-in"><span>Does It Pencil? is a free tool from Real Estate Cheat Codes. Results are estimates for comparing options, not financial, legal or tax advice.</span><span>Saved calculations stay in this browser.</span></div></footer>
+</body>
+</html>

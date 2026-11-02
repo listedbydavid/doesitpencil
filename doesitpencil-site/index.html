@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" data-root="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Does It Pencil? · Free Real Estate Deal Calculators</title>
+<meta name="description" content="Free real estate investing calculators from Real Estate Cheat Codes: rental cash flow and DSCR, flip vs. build, and more. Save and label your calculations.">
+<meta property="og:title" content="Does It Pencil? · Free Real Estate Deal Calculators">
+<meta property="og:description" content="Free real estate investing calculators from Real Estate Cheat Codes: rental cash flow and DSCR, flip vs. build, and more. Save and label your calculations.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://doesitpencil.org/">
+<link rel="canonical" href="https://doesitpencil.org/">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+.dip-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 14px}
+.dip-tools input[type=search]{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--dip-line);border-radius:8px;background:var(--dip-bg);color:var(--dip-fg);flex:1 1 220px;min-width:0}
+.dip-chips{display:flex;gap:6px;flex-wrap:wrap}
+.dip-chip{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--dip-line);background:var(--dip-bg);color:var(--dip-muted);border-radius:999px;padding:6px 12px;cursor:pointer}
+.dip-chip[aria-pressed="true"]{background:var(--dip-accent-soft);color:var(--dip-accent);border-color:transparent}
+.dip-list{display:flex;flex-direction:column;background:var(--dip-bg);border:1px solid var(--dip-line);border-radius:12px;overflow:hidden}
+.dip-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;padding:14px 16px;border-top:1px solid var(--dip-line);align-items:center}
+.dip-row:first-child{border-top:0}
+.dip-row .nm{font-weight:700;font-size:15px;overflow-wrap:anywhere}
+.dip-row .nm a{color:inherit;text-decoration:none}.dip-row .nm a:hover{color:var(--dip-accent);text-decoration:underline}
+.dip-row .meta{font-size:13px;color:var(--dip-muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.dip-badge{font-size:11.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--dip-accent);background:var(--dip-accent-soft);border-radius:4px;padding:2px 7px}
+.dip-head{font-weight:700;font-variant-numeric:tabular-nums}
+.dip-head.good{color:var(--dip-good)}.dip-head.bad{color:var(--dip-bad)}
+.dip-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.dip-acts .dip-btn{padding:6px 10px;font-size:13px}
+.dip-row input.rn{font:inherit;font-weight:700;font-size:15px;padding:5px 8px;border:1px solid var(--dip-accent);border-radius:6px;width:100%;background:var(--dip-bg);color:var(--dip-fg)}
+.dip-empty{padding:28px 18px;color:var(--dip-muted);text-align:center;line-height:1.6}
+.dip-note{font-size:13px;color:var(--dip-muted);line-height:1.55;margin-top:14px;max-width:72ch}
+@media (max-width:640px){.dip-row{grid-template-columns:1fr}.dip-acts{justify-content:flex-start}}
+
+.dip-hero{padding-block:20px 10px}
+.dip-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;margin-top:22px}
+.dip-card{background:var(--dip-bg);border:1px solid var(--dip-line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;position:relative;overflow:hidden}
+.dip-card:hover{border-color:var(--dip-accent)}
+.dip-card::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
+.dip-card h2{font-size:21px}
+.dip-card p{margin:0;color:var(--dip-muted);line-height:1.5}
+.dip-card .go{margin-top:auto;font-weight:700;color:var(--dip-accent)}
+.dip-card .n{font-size:12.5px;color:var(--dip-muted)}
+.dip-sec{margin-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dip-sec a{color:var(--dip-accent);font-weight:600;text-decoration:none}
+</style>
+</head>
+<body class="dip-page">
+<div id="dip-header"></div>
+<main class="dip-main">
+  <section class="dip-hero">
+    <h1>Run the numbers before you write the offer. <em>Does it pencil?</em></h1>
+    <p class="lede dip-lede">Free calculators for real estate investors and agents, built from the deals we underwrite every week. Plug in a property, see whether it works, and save each version with a label so you can come back to it.</p>
+  </section>
+  <div class="dip-cards" id="cards"></div>
+  <div class="dip-sec"><h2>Recently saved</h2><a href="saved/index.html">All saved calculations →</a></div>
+  <div class="dip-list" id="recent" style="margin-top:12px"></div>
+</main>
+<footer class="dip-foot"><div class="dip-in"><span>Does It Pencil? is a free tool from Real Estate Cheat Codes. Results are estimates for comparing options, not financial, legal or tax advice.</span><span>Saved calculations stay in this browser.</span></div></footer>
+<script src="assets/site.js"></script>
+<script>
+DIP.mountHeader('home');
+
+function ago(t){const s=(Date.now()-t)/1000;if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' hr ago';
+  return new Date(t).toLocaleDateString([], {month:'short',day:'numeric',year:new Date(t).getFullYear()===new Date().getFullYear()?undefined:'numeric'})}
+function rowHTML(e,full){
+  const c=DIP.CALCS[e.calc],sm=e.summary||{};
+  return `<div class="dip-row" data-id="${DIP.esc(e.id)}">
+   <div><div class="nm"><a href="${DIP.href(e.calc,e.id)}">${DIP.esc(e.label)}</a></div>
+   <div class="meta"><span class="dip-badge">${DIP.esc(c?c.short:e.calc)}</span>${sm.headline?`<span class="dip-head ${sm.tone||''}">${DIP.esc(sm.headline)}</span>`:''}${sm.detail?`<span>${DIP.esc(sm.detail)}</span>`:''}<span>Updated ${ago(e.updatedAt)}</span></div></div>
+   <div class="dip-acts"><a class="dip-btn dip-primary" href="${DIP.href(e.calc,e.id)}">Open</a>${full?`<button class="dip-btn" data-act="rename">Rename</button><button class="dip-btn" data-act="dup">Duplicate</button><button class="dip-btn dip-danger" data-act="del">Delete</button>`:''}</div></div>`;
+}
+
+const colors={rental:'var(--dip-green)',flip:'var(--dip-orange)'};
+function render(){
+  document.getElementById('cards').innerHTML=Object.entries(DIP.CALCS).map(([k,c])=>{const n=DIP.store.list(k).length;
+    return `<a class="dip-card" style="--c:${colors[k]||'var(--dip-blue)'}" href="${DIP.href(k)}"><h2>${DIP.esc(c.name)}</h2><p>${DIP.esc(c.blurb)}</p>
+    <span class="n">${n?n+' saved':'Nothing saved yet'}</span><span class="go">Open calculator →</span></a>`}).join('');
+  const r=DIP.store.list().slice(0,5);
+  document.getElementById('recent').innerHTML=r.length?r.map(e=>rowHTML(e,false)).join(''):'<div class="dip-empty">Calculations you save show up here. Open a calculator, name the deal, and select Save.</div>';
+}
+render();DIP.store.onChange(render);
+</script>
+</body>
+</html>
