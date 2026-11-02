@@ -114,3 +114,21 @@
 .dip-cta-bottom .go:hover{background:#fff36a}
 .dip-cta-bottom .go:focus-visible{outline:3px solid #fff;outline-offset:2px}
 body{font-variant-numeric:tabular-nums}
+
+/* --- QA fixes --- */
+/* phones: menu wraps onto two rows so every link (incl. Join the community) is visible */
+@media (max-width:640px){
+  .dip-nav{flex-wrap:wrap;overflow:visible;gap:4px}
+  .dip-nav a{padding:6px 10px;font-size:13px}
+}
+/* phones: shorter top CTA so the calculator starts near the top of the screen */
+@media (max-width:700px){
+  .dip-cta-top ul,.dip-cta-top .fine,.dip-cta-top .eyebrow{display:none}
+  .dip-cta-top .dip-in{padding-block:18px 20px;gap:0}
+  .dip-cta-top h2{font-size:20px;margin-bottom:6px}
+  .dip-cta-top p{font-size:14px}
+  .dip-cta-top .go{margin-top:12px;padding:10px 16px;font-size:15px}
+}
+/* dark mode: give the CTA bands a deep RECC blue so they stand apart from the dark page */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dip-cta,:root:not([data-theme="light"]) .dip-cta-bottom{background:#1a2052}}
+:root[data-theme="dark"] .dip-cta,:root[data-theme="dark"] .dip-cta-bottom{background:#1a2052}
