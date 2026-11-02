@@ -5,6 +5,8 @@
   const KEY='dip:saved:v1';
   const ROOT=document.documentElement.dataset.root||'';
   const CALCS={
+    napkin:{name:'Deal Napkin',short:'Deal napkin',path:'deal-napkin/index.html',
+      blurb:'The quick flip check. Price, ARV, rehab, hold time and loan terms in; a red, yellow or green verdict out, plus the max offer that makes it a deal.'},
     rental:{name:'Rental Cash Flow',short:'Rental cash flow',path:'rental/index.html',
       blurb:'Does a rental cover its payment? Monthly cash flow after the refi, DSCR, break-even price and rent, and year-1 tax savings from cost segregation.'},
     flip:{name:'Flip vs. Build',short:'Flip vs. build',path:'flip-vs-build/index.html',
@@ -71,10 +73,22 @@
       <nav class="dip-nav" aria-label="Calculators">
         ${Object.entries(CALCS).map(([k,c])=>link(k,c.short,c.path)).join('')}
         ${link('saved','My saved','saved/index.html')}
+        <a class="dip-join" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&utm_medium=website&utm_campaign=community_cta&utm_content=header" target="_blank" rel="noopener">Join the community</a>
       </nav>
     </div>`;
+    showNotice();
     const upd=()=>{const n=readAll().length;const c=document.getElementById('dip-count');if(c)c.textContent=n?String(n):''};
     upd();store.onChange(upd);
+  }
+
+  /* One-time notice: use of the site is acceptance of the Terms. */
+  function showNotice(){
+    let seen=false;try{seen=localStorage.getItem('dip:terms-ack')==='1'}catch(e){}
+    if(seen||document.getElementById('dip-notice'))return;
+    const n=document.createElement('div');n.className='dip-notice';n.id='dip-notice';n.setAttribute('role','region');n.setAttribute('aria-label','Terms notice');
+    n.innerHTML=`<p><b>Educational tool only. Not financial, legal, tax or real estate advice.</b> By using this site you agree to our <a href="${ROOT}terms/index.html">Terms of Use</a>, including the hold harmless and indemnification provisions.</p><button type="button">I understand</button>`;
+    n.querySelector('button').onclick=()=>{try{localStorage.setItem('dip:terms-ack','1')}catch(e){}n.remove()};
+    document.body.appendChild(n);
   }
 
   /* Save bar: label + Save / Save as new / New + an "Open saved" picker for this calculator.

@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Deal Napkin: Quick Flip Calculator · Does It Pencil?</title>
+<meta name="description" content="Free quick flip calculator. Enter purchase price, ARV, rehab, hold time and loan terms and get a red, yellow or green verdict, profit, cash needed and the max offer that makes it a deal.">
+<meta property="og:title" content="Deal Napkin: Quick Flip Calculator · Does It Pencil?">
+<meta property="og:description" content="Free quick flip calculator. Enter purchase price, ARV, rehab, hold time and loan terms and get a red, yellow or green verdict, profit, cash needed and the max offer that makes it a deal.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://doesitpencil.org/deal-napkin/">
+<link rel="canonical" href="https://doesitpencil.org/deal-napkin/">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Deal Napkin: inputs on the left, a traffic-light verdict on the right; stacks on phones. */
+:root{
+  --bg:#f3f5f8; --card:#ffffff; --field:#f6f7fa; --line:#d9dee6; --fg:#111418; --muted:#5c6470; --accent:#2b3c97;
+  --green:#1f7a4d; --green-bg:#e3f4ea; --green-ring:#46ab48;
+  --yellow:#8a5a00; --yellow-bg:#fdf6d8; --yellow-ring:#f2c200;
+  --red:#b3261e; --red-bg:#fbe5e2; --red-ring:#ed2224;
+  --num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12151b; --card:#1a1f27; --field:#212733; --line:#2b313c; --fg:#e8ebf0; --muted:#9aa3b0; --accent:#9aa8ff;
+  --green:#6fdc9c; --green-bg:#163327; --yellow:#f2cf5b; --yellow-bg:#352c10; --red:#ff8a7a; --red-bg:#3d1f1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151b; --card:#1a1f27; --field:#212733; --line:#2b313c; --fg:#e8ebf0; --muted:#9aa3b0; --accent:#9aa8ff;
+  --green:#6fdc9c; --green-bg:#163327; --yellow:#f2cf5b; --yellow-bg:#352c10; --red:#ff8a7a; --red-bg:#3d1f1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:"Public Sans",system-ui,sans-serif;font-size:15px;line-height:1.45}
+.wrap{max-width:1120px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+h1{font-family:"Montserrat","Public Sans",sans-serif;font-weight:800;font-size:clamp(26px,3.6vw,34px);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;max-width:64ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.inputs{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:700}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:420px){.fields{grid-template-columns:minmax(0,1fr)}}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted);min-width:0}
+.inp{display:flex;align-items:center;background:var(--field);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.inp:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.inp span{padding:0 9px;color:var(--muted);font-family:var(--num);font-size:13px}
+.inp input,.inp select{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font:500 15px var(--num);padding:9px 8px;outline:none;font-variant-numeric:tabular-nums}
+.inp select{font-family:inherit;font-size:14px}
+.hint{font-size:12.5px;color:var(--muted);margin:2px 0 0;font-weight:400}
+details.adv{border-top:1px dashed var(--line);margin-top:14px;padding-top:10px}
+details.adv summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--accent)}
+details.adv .fields{margin-top:12px}
+details.adv h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 0}
+
+.side{display:flex;flex-direction:column;gap:14px;position:sticky;top:12px;min-width:0}
+@media (max-width:860px){.side{position:static}}
+.verdict{border-radius:14px;padding:20px;border:2px solid var(--ring);background:var(--vbg);display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center}
+.verdict.green{--ring:var(--green-ring);--vbg:var(--green-bg);--vfg:var(--green)}
+.verdict.yellow{--ring:var(--yellow-ring);--vbg:var(--yellow-bg);--vfg:var(--yellow)}
+.verdict.red{--ring:var(--red-ring);--vbg:var(--red-bg);--vfg:var(--red)}
+.light{display:flex;flex-direction:column;gap:7px;background:#1b1f27;border-radius:14px;padding:9px}
+.light i{width:26px;height:26px;border-radius:50%;background:#3a3f4a;display:block}
+.verdict.red .light i:nth-child(1){background:#ed2224;box-shadow:0 0 14px #ed2224}
+.verdict.yellow .light i:nth-child(2){background:#f6c90e;box-shadow:0 0 14px #f6c90e}
+.verdict.green .light i:nth-child(3){background:#46ab48;box-shadow:0 0 14px #46ab48}
+.vt{font-family:"Montserrat",sans-serif;font-weight:800;font-size:26px;color:var(--vfg);letter-spacing:-.01em;line-height:1.1}
+.vp{font:600 30px var(--num);letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}
+.vp small{font-size:14px;color:var(--muted);font-weight:500}
+.vmsg{margin:6px 0 0;font-size:14px}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.checks li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:14px}
+.checks .ic{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff}
+.checks .ok .ic{background:var(--green-ring)}.checks .no .ic{background:var(--red-ring)}.checks .meh .ic{background:#d9a900}
+.checks .val{font-family:var(--num);font-size:13px;color:var(--muted);white-space:nowrap}
+.offer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.offer div{background:var(--card);padding:12px 14px;min-width:0}
+.offer .k{font-size:12px;color:var(--muted);font-weight:600}
+.offer .v{font:600 19px var(--num);font-variant-numeric:tabular-nums;margin-top:2px}
+.offer .n{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:6px 0;border-bottom:1px solid var(--line)}
+td.r{text-align:right;font-family:var(--num);font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:12px}
+tr.sub td{color:var(--muted);font-size:13px}
+tr.tot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
+.neg{color:var(--red)}
+.ex{font-size:12px;font-weight:700;color:var(--yellow);background:var(--yellow-bg);padding:2px 8px;border-radius:999px}
+.savecard{padding:12px 14px}
+</style>
+</head>
+<body>
+<div id="dip-header"></div>
+
+
+<div class="wrap">
+  <header>
+    <h1>Deal Napkin</h1>
+    <p class="sub">The back-of-the-napkin check for a flip. Five numbers in, a red, yellow or green answer out, plus the price you'd need to pay for it to be a deal.</p>
+  </header>
+  <div class="card savecard"><div id="dip-savebar"></div></div>
+
+  <div class="grid">
+    <div class="inputs">
+      <section class="card">
+        <h2>The deal <span class="ex" id="exTag">Sample numbers</span></h2>
+        <div class="fields">
+          <label class="f" for="price">Purchase price<div class="inp"><span>$</span><input id="price" type="number" step="5000" inputmode="decimal"></div></label>
+          <label class="f" for="arv">ARV (after-repair value)<div class="inp"><span>$</span><input id="arv" type="number" step="5000" inputmode="decimal"></div></label>
+          <label class="f" for="rehab">Rehab budget<div class="inp"><span>$</span><input id="rehab" type="number" step="1000" inputmode="decimal"></div></label>
+          <label class="f" for="months">Months held, buy to sale<div class="inp"><input id="months" type="number" step="1" min="1" inputmode="numeric"><span>mo</span></div></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>The money</h2>
+        <div class="fields">
+          <label class="f" for="loanMode">Money borrowed as<div class="inp"><select id="loanMode"><option value="pct">% of price + rehab</option><option value="amt">Dollar amount</option></select></div></label>
+          <label class="f" for="loanPct" id="loanPctWrap">Loan %<div class="inp"><input id="loanPct" type="number" step="5" inputmode="decimal"><span>%</span></div></label>
+          <label class="f" for="loanAmt" id="loanAmtWrap" hidden>Loan amount<div class="inp"><span>$</span><input id="loanAmt" type="number" step="5000" inputmode="decimal"></div></label>
+          <label class="f" for="rate">Interest rate<div class="inp"><input id="rate" type="number" step="0.25" inputmode="decimal"><span>%/yr</span></div></label>
+          <label class="f" for="points">Points / loan fees<div class="inp"><input id="points" type="number" step="0.25" inputmode="decimal"><span>%</span></div></label>
+          <label class="f" for="holdMo">Taxes, insurance, utilities<div class="inp"><span>$</span><input id="holdMo" type="number" step="100" inputmode="decimal"><span>/mo</span></div></label>
+        </div>
+        <p class="hint" id="loanHint"></p>
+
+        <details class="adv">
+          <summary>Advanced: costs and deal rules</summary>
+          <div class="fields">
+            <label class="f" for="closePct">Buying closing costs<div class="inp"><input id="closePct" type="number" step="0.25" inputmode="decimal"><span>% price</span></div></label>
+            <label class="f" for="sellPct">Selling costs<div class="inp"><input id="sellPct" type="number" step="0.5" inputmode="decimal"><span>% ARV</span></div></label>
+            <label class="f" for="contPct">Rehab contingency<div class="inp"><input id="contPct" type="number" step="1" inputmode="decimal"><span>%</span></div></label>
+          </div>
+          <h3>What counts as green</h3>
+          <div class="fields">
+            <label class="f" for="greenPct">Profit at least<div class="inp"><input id="greenPct" type="number" step="1" inputmode="decimal"><span>% ARV</span></div></label>
+            <label class="f" for="minProfit">and at least<div class="inp"><span>$</span><input id="minProfit" type="number" step="5000" inputmode="decimal"></div></label>
+            <label class="f" for="cushionPct">Still breaks even if ARV drops<div class="inp"><input id="cushionPct" type="number" step="1" inputmode="decimal"><span>%</span></div></label>
+            <label class="f" for="redPct">Red below<div class="inp"><input id="redPct" type="number" step="1" inputmode="decimal"><span>% ARV</span></div></label>
+          </div>
+          <p class="hint">Interest is figured on the full loan for every month you hold, which is conservative when rehab money is drawn over time. Selling costs cover agent commissions and seller closing costs.</p>
+        </details>
+      </section>
+    </div>
+
+    <aside class="side" aria-live="polite">
+      <div class="verdict" id="verdict">
+        <div class="light" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div>
+          <div class="vt" id="vt"></div>
+          <div class="vp" id="vp"></div>
+          <p class="vmsg" id="vmsg"></p>
+        </div>
+      </div>
+
+      <div class="offer">
+        <div><div class="k">Max offer for green</div><div class="v" id="maxGreen"></div><div class="n" id="maxGreenN"></div></div>
+        <div><div class="k">Break-even price</div><div class="v" id="maxBE"></div><div class="n">Pay more and you lose money</div></div>
+        <div><div class="k">Cash you need</div><div class="v" id="cash"></div><div class="n" id="cashN"></div></div>
+        <div><div class="k">Return on cash</div><div class="v" id="roi"></div><div class="n" id="roiN"></div></div>
+      </div>
+
+      <section class="card">
+        <h2>The tests</h2>
+        <ul class="checks" id="checks"></ul>
+      </section>
+
+      <section class="card">
+        <h2>The napkin math</h2>
+        <table id="math"></table>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script src="../assets/site.js"></script>
+<script>
+DIP.mountHeader("napkin");
+(function(){
+const $=id=>document.getElementById(id);
+const F=['price','arv','rehab','months','loanMode','loanPct','loanAmt','rate','points','holdMo','closePct','sellPct','contPct','greenPct','minProfit','cushionPct','redPct'];
+const EXAMPLE={price:600000,arv:925000,rehab:110000,months:6,loanMode:'pct',loanPct:90,loanAmt:684000,rate:11,points:2,holdMo:1200,
+  closePct:1.5,sellPct:6,contPct:10,greenPct:15,minProfit:50000,cushionPct:10,redPct:8};
+const money=v=>(v<0?'−':'')+'$'+Math.round(Math.abs(v)).toLocaleString('en-US');
+const kmoney=v=>{const a=Math.abs(v);return (v<0?'−':'')+(a>=1e6?'$'+(a/1e6).toFixed(2)+'M':'$'+Math.round(a/1000)+'K')};
+const pct=(v,d=1)=>isFinite(v)?(v*100).toFixed(d)+'%':'—';
+
+function model(d,priceOverride){
+  const price=priceOverride??(+d.price||0), arv=+d.arv||0, months=Math.max(1,+d.months||1);
+  const rehab=(+d.rehab||0)*(1+(+d.contPct||0)/100);
+  const closing=price*(+d.closePct||0)/100;
+  const project=price+rehab;
+  let loan=d.loanMode==='amt'?(+d.loanAmt||0):project*(+d.loanPct||0)/100;
+  loan=Math.max(0,Math.min(loan,project));
+  const points=loan*(+d.points||0)/100;
+  const interest=loan*(+d.rate||0)/100/12*months;
+  const hold=(+d.holdMo||0)*months;
+  const sellF=(+d.sellPct||0)/100;
+  const selling=arv*sellF;
+  const allIn=price+closing+rehab+points+interest+hold;
+  const profit=arv-selling-allIn;
+  const cash=allIn-loan;
+  const margin=arv>0?profit/arv:0;
+  const beArv=sellF<1?allIn/(1-sellF):Infinity;
+  const cushion=arv>0?1-beArv/arv:0;
+  const rule70=0.7*arv-(+d.rehab||0);
+  const roi=cash>0?profit/cash*12/months:NaN;
+  const tests={
+    margin:margin>=(+d.greenPct||0)/100,
+    dollars:profit>=(+d.minProfit||0),
+    cushion:cushion>=(+d.cushionPct||0)/100
+  };
+  const red=profit<0||margin<(+d.redPct||0)/100;
+  const color=red?'red':(tests.margin&&tests.dollars&&tests.cushion?'green':'yellow');
+  return {price,arv,months,rehab,closing,loan,points,interest,hold,selling,allIn,profit,cash,margin,beArv,cushion,rule70,roi,tests,color};
+}
+function maxPrice(d,ok){ // highest price where ok(model) is true
+  if(!ok(model(d,0)))return null;
+  let lo=0,hi=Math.max(+d.arv||0,1)*1.5;
+  for(let i=0;i<60;i++){const m=(lo+hi)/2;if(ok(model(d,m)))lo=m;else hi=m}
+  return Math.floor(lo/1000)*1000;
+}
+
+function read(){const d={};F.forEach(k=>{const el=$(k);d[k]=el.tagName==='SELECT'?el.value:(el.value===''?'':+el.value)});return d}
+function load(d){d={...EXAMPLE,...d};F.forEach(k=>{if(d[k]!==undefined)$(k).value=d[k]});calc()}
+
+function calc(){
+  const d=read();
+  $('loanPctWrap').hidden=d.loanMode!=='pct';$('loanAmtWrap').hidden=d.loanMode!=='amt';
+  const m=model(d);
+  const v=$('verdict');v.className='verdict '+m.color;
+  $('vt').textContent=m.color==='green'?'Green: it\'s a deal':m.color==='yellow'?'Yellow: close to a deal':'Red: not a deal';
+  $('vp').innerHTML=`${money(m.profit)} <small>profit · ${pct(m.margin)} of ARV</small>`;
+  const g=maxPrice(d,x=>x.color==='green');
+  const be=maxPrice(d,x=>x.profit>=0);
+  let msg;
+  if(m.color==='green')msg=g!=null&&g>m.price?`You have room: it stays green up to about ${money(g)}.`:'It clears every test.';
+  else if(g!=null&&m.price>0)msg=`Offer about ${money(m.price-g)} less (${money(g)}) to make it green.`;
+  else msg='No purchase price makes this green with this ARV and rehab. Check the ARV or cut the rehab.';
+  if(m.color==='red'&&m.profit<0)msg=`It loses ${money(-m.profit)} at this price. `+msg;
+  $('vmsg').textContent=msg;
+
+  $('maxGreen').textContent=g!=null?money(g):'—';
+  $('maxGreenN').textContent=g!=null?(g>=m.price?money(g-m.price)+' above your price':money(m.price-g)+' below your price'):'Not reachable';
+  $('maxBE').textContent=be!=null?money(be):'—';
+  $('cash').textContent=money(m.cash);
+  $('cashN').textContent=`Borrowing ${money(m.loan)}`;
+  $('roi').textContent=pct(m.roi,0);
+  $('roiN').textContent=`Annualized over ${m.months} mo`;
+  $('loanHint').textContent=d.loanMode==='pct'?`Loan: ${money(m.loan)} (${d.loanPct||0}% of ${money(m.price+m.rehab)} price + rehab with contingency). Points: ${money(m.points)}.`:`Points on ${money(m.loan)}: ${money(m.points)}.`;
+
+  const row=(ok,label,val)=>`<li class="${ok===true?'ok':ok===false?'no':'meh'}"><span class="ic">${ok===true?'✓':ok===false?'✕':'!'}</span><span>${label}</span><span class="val">${val}</span></li>`;
+  $('checks').innerHTML=
+    row(m.tests.margin,`Profit is at least ${d.greenPct}% of ARV`,pct(m.margin))+
+    row(m.tests.dollars,`Profit is at least ${money(+d.minProfit||0)}`,kmoney(m.profit))+
+    row(m.tests.cushion,`Still breaks even if ARV drops ${d.cushionPct}%`,`breaks even at ${kmoney(m.beArv)} (−${Math.max(0,m.cushion*100).toFixed(0)}%)`)+
+    row((+d.price||0)+(+d.rehab||0)<=0.7*m.arv?true:'meh',`70% rule: price + rehab ≤ 70% of ARV`,`max price ${kmoney(m.rule70)}`);
+
+  const r=(a,b,c='')=>`<tr class="${c}"><td>${a}</td><td class="r ${b<0?'neg':''}">${money(b)}</td></tr>`;
+  $('math').innerHTML=
+    r('Sale price (ARV)',m.arv)+r(`Selling costs (${d.sellPct}%)`,-m.selling,'sub')+
+    r('Purchase price',-m.price,'sub')+r(`Closing costs (${d.closePct}%)`,-m.closing,'sub')+
+    r(`Rehab with ${d.contPct}% contingency`,-m.rehab,'sub')+
+    r(`Points (${d.points}%)`,-m.points,'sub')+r(`Interest, ${m.months} mo at ${d.rate}%`,-m.interest,'sub')+
+    r(`Taxes, insurance, utilities, ${m.months} mo`,-m.hold,'sub')+
+    r('Profit',m.profit,'tot');
+}
+
+F.forEach(k=>{$(k).addEventListener('input',()=>{$('exTag').hidden=true;window.__dipBar&&window.__dipBar.changed();calc()});
+  if($(k).tagName==='SELECT')$(k).addEventListener('change',()=>{window.__dipBar&&window.__dipBar.changed();calc()})});
+load(EXAMPLE);
+window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'napkin',
+  getState:read,
+  setState:d=>{load(d);$('exTag').hidden=true},
+  reset:()=>{load({...EXAMPLE,price:'',arv:'',rehab:'',loanAmt:''});$('exTag').hidden=true},
+  defaultLabel:d=>'Flip at '+money(+d.price||0),
+  summarize:d=>{const m=model(d);return {headline:(m.color==='green'?'Green':m.color==='yellow'?'Yellow':'Red')+' · '+kmoney(m.profit)+' profit',
+    detail:money(+d.price||0)+' buy · '+money(+d.arv||0)+' ARV · '+pct(m.margin)+' margin',tone:m.color==='green'?'good':m.color==='red'?'bad':'warn'}}});
+})();
+</script>
+
+<section class="dip-cta" aria-labelledby="cta-h"><div class="dip-in">
+  <div>
+    <p class="eyebrow">Real Estate Cheat Codes community</p>
+    <h2 id="cta-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
+    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
+    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=deal-napkin" target="_blank" rel="noopener">Join the community on Skool →</a>
+    <p class="fine">See what's included and sign up on Skool.</p>
+  </div>
+  <ul>
+    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
+    <li>Monthly live community calls</li>
+    <li>The strategies top performers use to scale</li>
+    <li>A private network of investors, agents and developers</li>
+  </ul>
+</div></section>
+<footer class="dip-foot"><div class="dip-in">
+<p class="dip-legal"><b>Educational use only.</b> Does It Pencil? is a free educational tool, not financial, investment, legal, tax, lending or real estate advice. Results are estimates based on your inputs and are not guaranteed. Consult licensed professionals before making any decision. By using this site you agree to the <a href="../terms/index.html">Terms of Use</a>, including its disclaimer of warranties, limitation of liability, and hold harmless and indemnification provisions.</p>
+<p class="dip-legal">© 2026 D &amp; A Ventures LLC, doing business as Real Estate Cheat Codes. All rights reserved. The calculators, formulas, source code, reports, content and the names Does It Pencil? and Deal Napkin are the intellectual property of D &amp; A Ventures LLC and may not be copied, reproduced or redistributed without written permission. Saved calculations stay in your browser. · <a href="../terms/index.html">Terms of Use</a></p>
+</div></footer>
+</body>
+</html>

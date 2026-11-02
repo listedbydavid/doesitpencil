@@ -171,7 +171,7 @@ table.ed input,table.ed select{padding:4px 5px;font-size:12px}
 <div><h3>Draw timing</h3><p>Each cost is spread evenly from its start month to its end month. Senior interest only runs on money already drawn, so a cost spent late carries less interest than one spent at closing.</p></div>
 <div><h3>Two ways to value the exit</h3><p>Use a sale price, or value the property on income: rents × 12, less vacancy and management, less fixed operating costs, divided by the cap rate. Units rented before the sale also pay down the private loan.</p></div>
 <div><h3>What the outputs mean</h3><p>Profit is the sale value minus selling costs and the all-in cost. Private money needed is all-in cost minus the senior loan. Return on private money is profit divided by private dollars in, annualized. Break-even finds the sale price, rent drop or cap rate where profit hits zero.</p></div>
-<p class="fine">Does It Pencil? is a free tool from Real Estate Cheat Codes. Results are estimates for comparing options, not financial, legal or tax advice, and not a guarantee of results. Your inputs stay in your browser.</p>
+<p class="fine">Does It Pencil? is a free tool from Real Estate Cheat Codes, a D &amp; A Ventures LLC company. Results are estimates for comparing options, not financial, legal or tax advice, and not a guarantee of results. Your inputs stay in your browser.</p>
 </div></section>
 
 <script src="../assets/site.js"></script>
@@ -460,7 +460,7 @@ function renderInputs(){
 </script>
 <script>
 /* ================= report pages ================= */
-function foot(n){const d=S.deal;return `<div class="foot"><span>${esc([d.address,d.entity,d.preparedBy?'Prepared by '+d.preparedBy:'',d.date].filter(Boolean).join(' · '))}</span><span><span class="site">doesitpencil.org</span> · ${n}</span></div><div class="stripe"><i></i><i></i><i></i><i></i><i></i></div>`}
+function foot(n){const d=S.deal;return `<div class="foot"><span>${esc([d.address,d.entity,d.preparedBy?'Prepared by '+d.preparedBy:'',d.date].filter(Boolean).join(' · '))}</span><span>© 2026 D &amp; A Ventures LLC dba Real Estate Cheat Codes · Educational estimate, not advice · <span class="site">doesitpencil.org</span> · ${n}</span></div><div class="stripe"><i></i><i></i><i></i><i></i><i></i></div>`}
 const ul=s=>`<ul>${lines(s).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
 const pipeRows=s=>lines(s).map(l=>l.split('|').map(x=>x.trim()));
 function stressRows(o){
@@ -669,6 +669,24 @@ window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'flip',
     return {headline:'Best: '+K(rs[bi].profit)+' profit',detail:K(+st.deal.purchase||0)+' purchase · '+st.options.length+' option'+(st.options.length===1?'':'s')+' · best is '+(st.options[bi]?.name||''),tone:rs[bi].profit>=0?'good':'bad'}}});
 </script>
 
-<footer class="dip-foot"><div class="dip-in"><span>Does It Pencil? is a free tool from Real Estate Cheat Codes. Results are estimates for comparing options, not financial, legal or tax advice.</span><span>Saved calculations stay in this browser.</span></div></footer>
+<section class="dip-cta" aria-labelledby="cta-h"><div class="dip-in">
+  <div>
+    <p class="eyebrow">Real Estate Cheat Codes community</p>
+    <h2 id="cta-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
+    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
+    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=flip-vs-build" target="_blank" rel="noopener">Join the community on Skool →</a>
+    <p class="fine">See what's included and sign up on Skool.</p>
+  </div>
+  <ul>
+    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
+    <li>Monthly live community calls</li>
+    <li>The strategies top performers use to scale</li>
+    <li>A private network of investors, agents and developers</li>
+  </ul>
+</div></section>
+<footer class="dip-foot"><div class="dip-in">
+<p class="dip-legal"><b>Educational use only.</b> Does It Pencil? is a free educational tool, not financial, investment, legal, tax, lending or real estate advice. Results are estimates based on your inputs and are not guaranteed. Consult licensed professionals before making any decision. By using this site you agree to the <a href="../terms/index.html">Terms of Use</a>, including its disclaimer of warranties, limitation of liability, and hold harmless and indemnification provisions.</p>
+<p class="dip-legal">© 2026 D &amp; A Ventures LLC, doing business as Real Estate Cheat Codes. All rights reserved. The calculators, formulas, source code, reports, content and the names Does It Pencil? and Deal Napkin are the intellectual property of D &amp; A Ventures LLC and may not be copied, reproduced or redistributed without written permission. Saved calculations stay in your browser. · <a href="../terms/index.html">Terms of Use</a></p>
+</div></footer>
 </body>
 </html>
