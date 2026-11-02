@@ -48,6 +48,12 @@
 .dip-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;margin-top:22px}
 .dip-card{background:var(--dip-bg);border:1px solid var(--dip-line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;position:relative;overflow:hidden}
 .dip-card:hover{border-color:var(--dip-accent)}
+.dip-gh{font-size:13px!important;letter-spacing:.1em;text-transform:uppercase;color:var(--dip-muted);margin:28px 0 -8px!important}
+.dip-tag{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dip-accent);background:var(--dip-accent-soft);border-radius:999px;padding:3px 9px}
+.dip-picker{display:grid;gap:10px;margin-top:22px;background:var(--dip-bg);border:1px solid var(--dip-line);border-radius:14px;padding:16px 18px}
+.dip-picker>div{display:grid;grid-template-columns:12px minmax(0,1fr);gap:12px;align-items:start;line-height:1.55;font-size:15px}
+.dip-picker .dip-dot{margin-top:7px}
+.dip-picker a{color:var(--dip-accent);font-weight:700}
 .dip-card::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
 .dip-card h2{font-size:21px}
 .dip-card p{margin:0;color:var(--dip-muted);line-height:1.5}
@@ -79,7 +85,12 @@
     <h1>Run the numbers before you write the offer. <em>Does it pencil?</em></h1>
     <p class="lede dip-lede">Free calculators for real estate investors and agents, built from the deals we underwrite every week. Plug in a property, see whether it works, and save each version with a label so you can come back to it.</p>
   </section>
-  <div class="dip-cards" id="cards"></div>
+  <div class="dip-picker">
+    <div><span class="dip-dot" style="background:var(--dip-orange)"></span><span><b>Looking at a flip?</b> Start with the <a href="deal-napkin/index.html">Deal Napkin</a> for a 30-second yes or no. Then compare flip, add-units and build-and-sell plans in <a href="flip-vs-build/index.html">Flip vs. Build</a>.</span></div>
+    <div><span class="dip-dot" style="background:var(--dip-green)"></span><span><b>Looking at a rental?</b> Start with the <a href="rental/index.html">Rental Quick Check</a>. Then go deep with <a href="rental-underwriting/index.html">Rental Underwriting</a>: 10-year projection, ADU scenario and cost seg tax savings.</span></div>
+    <div><span class="dip-dot" style="background:var(--dip-blue)"></span><span><b>Every calculator answers the same way:</b> <i class="dip-dot dip-green"></i> green means it's a deal, <i class="dip-dot dip-yellow"></i> yellow means close, <i class="dip-dot dip-red"></i> red means not a deal.</span></div>
+  </div>
+  <div id="cards"></div>
   <div class="dip-sec"><h2>Recently saved</h2><a href="saved/index.html">All saved calculations →</a></div>
   <div class="dip-list" id="recent" style="margin-top:12px"></div>
 </main>
@@ -107,11 +118,11 @@ function rowHTML(e,full){
    <div class="dip-acts"><a class="dip-btn dip-primary" href="${DIP.href(e.calc,e.id)}">Open</a>${full?`<button class="dip-btn" data-act="rename">Rename</button><button class="dip-btn" data-act="dup">Duplicate</button><button class="dip-btn dip-danger" data-act="del">Delete</button>`:''}</div></div>`;
 }
 
-const colors={napkin:'var(--dip-red)',rental:'var(--dip-green)',flip:'var(--dip-orange)'};
+const colors={napkin:'var(--dip-red)',flip:'var(--dip-orange)',rental:'var(--dip-green)',underwriting:'var(--dip-blue)'};
 function render(){
-  document.getElementById('cards').innerHTML=Object.entries(DIP.CALCS).map(([k,c])=>{const n=DIP.store.list(k).length;
-    return `<a class="dip-card" style="--c:${colors[k]||'var(--dip-blue)'}" href="${DIP.href(k)}"><h2>${DIP.esc(c.name)}</h2><p>${DIP.esc(c.blurb)}</p>
-    <span class="n">${n?n+' saved':'Nothing saved yet'}</span><span class="go">Open calculator →</span></a>`}).join('');
+  document.getElementById('cards').innerHTML=DIP.GROUPS.map(g=>`<h2 class="dip-gh">${g}</h2><div class="dip-cards">`+Object.entries(DIP.CALCS).filter(([k,c])=>c.group===g).map(([k,c])=>{const n=DIP.store.list(k).length;
+    return `<a class="dip-card" style="--c:${colors[k]||'var(--dip-blue)'}" href="${DIP.href(k)}"><span class="dip-tag">${c.start?'Start here · quick':'Go deeper · full'}</span><h2>${DIP.esc(c.name)}</h2><p>${DIP.esc(c.blurb)}</p>
+    <span class="n">${n?n+' saved':'Nothing saved yet'}</span><span class="go">Open calculator →</span></a>`}).join('')+'</div>').join('');
   const r=DIP.store.list().slice(0,5);
   document.getElementById('recent').innerHTML=r.length?r.map(e=>rowHTML(e,false)).join(''):'<div class="dip-empty">Calculations you save show up here. Open a calculator, name the deal, and select Save.</div>';
 }

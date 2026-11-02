@@ -132,3 +132,109 @@ body{font-variant-numeric:tabular-nums}
 /* dark mode: give the CTA bands a deep RECC blue so they stand apart from the dark page */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dip-cta,:root:not([data-theme="light"]) .dip-cta-bottom{background:#1a2052}}
 :root[data-theme="dark"] .dip-cta,:root[data-theme="dark"] .dip-cta-bottom{background:#1a2052}
+
+/* ===== v3: grouped nav, traffic light, sticky bar, share, email, next, definitions, embed, PDF ===== */
+.dip-grp{display:flex;align-items:center;gap:2px;padding-right:6px;margin-right:2px;border-right:1px solid var(--dip-line)}
+.dip-grp-l{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dip-muted);padding:0 6px 0 4px}
+@media (max-width:640px){.dip-grp{border-right:0;padding-right:0;width:100%}.dip-grp-l{min-width:58px}}
+
+.dip-light{--dip-dot:14px;display:inline-flex;flex-direction:column;gap:calc(var(--dip-dot)*.28);background:#1b1f27;border-radius:calc(var(--dip-dot)*.6);padding:calc(var(--dip-dot)*.32);flex:none;vertical-align:middle}
+.dip-light i{width:var(--dip-dot);height:var(--dip-dot);border-radius:50%;background:#3a3f4a;display:block}
+.dip-light.dip-red i:nth-child(1){background:#ed2224;box-shadow:0 0 calc(var(--dip-dot)*.5) #ed2224}
+.dip-light.dip-yellow i:nth-child(2){background:#f6c90e;box-shadow:0 0 calc(var(--dip-dot)*.5) #f6c90e}
+.dip-light.dip-green i:nth-child(3){background:#46ab48;box-shadow:0 0 calc(var(--dip-dot)*.5) #46ab48}
+.dip-legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--dip-muted);font-family:var(--dip-sans)}
+.dip-legend span{display:flex;align-items:center;gap:6px}
+.dip-legend b{color:var(--dip-fg)}
+.dip-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dip-dot.dip-green{background:#46ab48}.dip-dot.dip-yellow{background:#f6c90e}.dip-dot.dip-red{background:#ed2224}
+.dip-vchip{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px 3px 6px;white-space:nowrap}
+.dip-vchip.dip-green{background:#e3f4ea;color:#1f7a4d}.dip-vchip.dip-yellow{background:#fdf6d8;color:#8a5a00}.dip-vchip.dip-red{background:#fbe5e2;color:#b3261e}
+
+.dip-sticky{display:none}
+@media (max-width:860px){
+  .dip-sticky{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;align-items:center;gap:10px;background:#111418;color:#fff;font-family:var(--dip-sans);
+    padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .dip-sticky .dip-light{flex-direction:row;padding:4px 6px}
+  .dip-st-l{font-weight:700}.dip-st-v{font-weight:800;margin-left:auto;font-variant-numeric:tabular-nums}.dip-st-s{font-size:12px;color:#c3c9d2;width:100%;margin-top:-6px;padding-left:2px}
+  .dip-sticky{flex-wrap:wrap}
+}
+html.dip-embedded .dip-sticky{display:none!important}
+
+.dip-actions{display:flex;gap:8px;flex-wrap:wrap}
+.dip-sharebox{flex-basis:100%;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dip-sharebox input{flex:1 1 260px;font-size:13px!important;font-weight:500!important;color:var(--dip-muted)!important}
+.dip-sharebox span{font-size:12.5px;color:var(--dip-good);flex-basis:100%}
+.dip-sharebox[hidden]{display:none}
+
+.dip-next{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;border:1px dashed var(--dip-accent);border-radius:12px;padding:14px 16px;font-family:var(--dip-sans);background:var(--dip-accent-soft)}
+.dip-next p{margin:0;font-size:14px;color:var(--dip-fg);max-width:60ch}
+.dip-next-go{font-weight:700;font-size:14px;color:var(--dip-accent);text-decoration:none;white-space:nowrap}
+.dip-next-go:hover{text-decoration:underline}
+
+.dip-email{border:1px solid var(--dip-line);border-radius:12px;padding:16px;background:var(--dip-bg);font-family:var(--dip-sans)}
+.dip-email h3{margin:0 0 4px;font-size:16px;font-weight:800}
+.dip-email p{margin:0 0 10px;font-size:13.5px;color:var(--dip-muted);line-height:1.5}
+.dip-email-row{display:flex;gap:8px;flex-wrap:wrap}
+.dip-email-row input{flex:1 1 200px;min-width:0;font:inherit;font-size:14px;padding:9px 10px;border:1px solid var(--dip-line);border-radius:8px;background:var(--dip-soft);color:var(--dip-fg)}
+.dip-email-row button{font:inherit;font-weight:700;font-size:14px;border:0;border-radius:8px;padding:9px 14px;background:var(--dip-accent);color:var(--dip-on-accent);cursor:pointer}
+.dip-email-fine{font-size:11.5px!important;margin:8px 0 0!important}
+.dip-email-msg{font-size:13px!important;color:var(--dip-fg)!important;margin:6px 0 0!important}
+.dip-email[hidden]{display:none}
+
+.dip-def{display:inline-grid;place-items:center;width:16px;height:16px;margin-left:5px;border-radius:50%;border:1px solid currentColor;background:transparent;color:var(--dip-muted);font:700 10.5px/1 var(--dip-sans);cursor:help;padding:0;vertical-align:1px;opacity:.75;text-transform:none;letter-spacing:0}
+.dip-def:hover,.dip-def:focus-visible{opacity:1;color:var(--dip-accent);outline:none}
+.dip-tip{position:absolute;z-index:100;background:#111418;color:#f3f5f8;font:500 13px/1.5 var(--dip-sans);padding:10px 12px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.25);text-transform:none;letter-spacing:0}
+.dip-tip b{color:#f6eb16;margin-right:4px}
+.dip-tip[hidden]{display:none}
+
+/* embedded (iframe on another site): just the calculator, a compact CTA and a one-line legal note */
+html.dip-embedded .dip-header,html.dip-embedded .dip-cta-top,html.dip-embedded .dip-notice,html.dip-embedded .dip-foot .dip-legal{display:none!important}
+.dip-embed-legal{margin:0;font-size:12px}
+
+/* PDF report pages (letter portrait, always light) */
+.dip-rep-wrap{position:fixed;left:-12000px;top:0;width:816px}
+.dip-rep{width:816px;height:1056px;background:#fff;color:#111418;font-family:"Montserrat",system-ui,sans-serif;position:relative;padding:44px 52px 40px;display:flex;flex-direction:column;box-sizing:border-box;font-variant-numeric:tabular-nums}
+.dip-rep *{box-sizing:border-box}
+.dip-rep-stripe{position:absolute;inset:0 0 auto 0;height:7px;display:flex}.dip-rep-stripe i{flex:1}
+.dip-rep-stripe i:nth-child(1){background:#ed2224}.dip-rep-stripe i:nth-child(2){background:#f36c21}.dip-rep-stripe i:nth-child(3){background:#f6eb16}.dip-rep-stripe i:nth-child(4){background:#46ab48}.dip-rep-stripe i:nth-child(5){background:#2b3c97}
+.dip-rep-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #e3e8ec}
+.dip-rep-head img{height:30px}.dip-rep-head span{font-size:12px;color:#5c6470;font-weight:600}
+.dip-rep-body{flex:1;overflow:hidden;padding-top:14px}
+.dip-rep-foot{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #e3e8ec;padding-top:8px;font-size:10px;color:#7a8490}
+.dip-rep-block{margin-bottom:14px}
+.dip-rep-title h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.01em}
+.dip-rep-title p{margin:4px 0 0;color:#5c6470;font-size:12.5px}
+.dip-rep h2{font-size:14px;font-weight:800;color:#2b3c97;margin:0 0 8px;text-transform:uppercase;letter-spacing:.05em}
+.dip-rep-verdict{display:flex;align-items:center;gap:16px;border:2px solid #d9dee6;border-radius:12px;padding:14px 16px;margin-bottom:8px}
+.dip-rep-verdict.dip-green{border-color:#46ab48;background:#e3f4ea}.dip-rep-verdict.dip-yellow{border-color:#f2c200;background:#fdf6d8}.dip-rep-verdict.dip-red{border-color:#ed2224;background:#fbe5e2}
+.dip-rep-verdict .vl{font-size:18px;font-weight:800}.dip-rep-verdict .vh{font-size:24px;font-weight:800;margin-top:2px}.dip-rep-verdict .vs{font-size:12px;color:#3d4550;margin-top:4px}
+.dip-rep-verdict.dip-green .vl{color:#1f7a4d}.dip-rep-verdict.dip-yellow .vl{color:#8a5a00}.dip-rep-verdict.dip-red .vl{color:#b3261e}
+.dip-rep .dip-legend{color:#5c6470;font-size:11.5px}.dip-rep .dip-legend b{color:#111418}
+.dip-rep-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dip-rep-kpis>div{border:1px solid #e3e8ec;border-radius:8px;padding:8px 10px}
+.dip-rep-kpis .k{font-size:10.5px;color:#5c6470;font-weight:600}.dip-rep-kpis .v{font-size:16px;font-weight:800;margin-top:2px}.dip-rep-kpis .s{font-size:10px;color:#7a8490;margin-top:1px}
+.dip-rep table{width:100%;border-collapse:collapse;font-size:11.5px}
+.dip-rep td,.dip-rep th{padding:4px 6px;border-bottom:1px solid #eef1f4;text-align:left;color:#111418;background:none}
+.dip-rep td.r,.dip-rep th.r,.dip-rep-clone td:not(:first-child),.dip-rep-clone th:not(:first-child){text-align:right}
+.dip-rep tr.tot td,.dip-rep tr.total td,.dip-rep tr.net td{font-weight:800;border-top:1.5px solid #111418}
+.dip-rep tr.sub td{color:#5c6470}
+.dip-rep .neg{color:#b3261e}.dip-rep .pos{color:#1f7a4d}
+.dip-rep-clone{width:100%}
+.dip-rep-clone *{font-family:inherit!important}
+.dip-rep-note{font-size:10.5px;color:#5c6470;line-height:1.5;margin:0}
+.dip-rep-cta{background:#111418;color:#e8ebf0;border-radius:10px;padding:10px 14px;font-size:12px}.dip-rep-cta b{color:#f6eb16}
+/* report pages always use light values, even when the site is in dark mode */
+.dip-rep{--fg:#111418;--text:#111418;--muted:#5c6470;--line:#e3e8ec;--border:#e3e8ec;--card:#fff;--surface:#fff;--surface2:#f3f5f8;--field:#f3f5f8;--bg:#fff;
+  --good:#1f7a4d;--good-bg:#dff1e6;--bad:#b3261e;--bad-bg:#fbe5e2;--warn:#8a5a00;--warn-bg:#fdf6d8;--green:#1f7a4d;--red:#b3261e;--yellow:#8a5a00;
+  --green-ring:#46ab48;--red-ring:#ed2224;--dip-fg:#111418;--dip-muted:#5c6470}
+.dip-rep tr.group td{font-weight:700;color:#5c6470;padding-top:8px}
+.dip-rep .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12px}
+.dip-rep .checks li{display:grid;grid-template-columns:20px 1fr auto;gap:8px;align-items:center}
+.dip-rep .checks .ic{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800}
+.dip-rep .checks .ok .ic{background:#46ab48}.dip-rep .checks .no .ic{background:#ed2224}.dip-rep .checks .meh .ic{background:#d9a900}
+.dip-rep .sens td{text-align:center!important}
+/* html2canvas cannot read color-mix(): give report contents plain colors */
+.dip-rep td,.dip-rep th,.dip-rep tr{border-color:#eef1f4!important;box-shadow:none!important}
+.dip-rep tbody tr+tr td{border-top:1px solid #eef1f4!important}
+.dip-rep tr.hold td{background:#fdf6d8!important}

@@ -72,6 +72,9 @@ button.icon{padding:6px 0;width:34px;color:var(--muted)}
 .results{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:16px;min-width:0}
 @media (max-width:880px){.results{position:static}}
 .verdict{border-radius:12px;padding:18px 20px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.vgrid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.vbody{display:flex;flex-direction:column;gap:6px;min-width:0}
+.verdict.green{border:2px solid #46ab48;background:var(--good-bg)}.verdict.yellow{border:2px solid #f2c200;background:var(--warn-bg)}.verdict.red{border:2px solid #ed2224;background:var(--bad-bg)}
 .pill{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
 .pill.good{background:var(--good-bg);color:var(--good)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:var(--bad-bg);color:var(--bad)}
 .big{font:600 34px/1.1 var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
@@ -117,7 +120,7 @@ tr.sub td{color:var(--muted);font-size:13px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Does this rental pencil?</h1>
+      <h1>Rental Quick Check</h1>
       <p class="sub">Monthly cash flow after the refi, the numbers a DSCR lender checks, and the year-1 tax savings from cost segregation.</p>
     </div>
   </header>
@@ -175,6 +178,7 @@ tr.sub td{color:var(--muted);font-size:13px}
           <label class="f">Rate<div class="inp"><input id="rate" type="number" step="0.125"><span>%</span></div></label>
           <label class="f">Payment type<div class="inp"><select id="io"><option value="1">Interest-only</option><option value="0">30-yr amortizing</option></select></div></label>
           <label class="f">Loan costs<div class="inp"><input id="loanCostPct" type="number" step="0.25"><span>% loan</span></div></label>
+          <label class="f">Target cash flow<div class="inp"><span>$</span><input id="target" type="number" step="50"><span>/mo</span></div></label>
         </div>
         <div class="fields" id="bridgeFields">
           <label class="f">HELOC rate<div class="inp"><input id="helocRate" type="number" step="0.125"><span>%</span></div></label>
@@ -198,11 +202,14 @@ tr.sub td{color:var(--muted);font-size:13px}
     </div>
 
     <aside class="results" aria-live="polite">
-      <div class="verdict">
+      <div class="verdict" id="verdict">
+        <div class="vgrid"><span id="vlight"></span><div class="vbody">
         <span id="pill" class="pill good">Pencils</span>
         <div class="big" id="cfBig">$0 <small>/ month</small></div>
         <p id="verdictTxt"></p>
+        </div></div>
       </div>
+      <div id="vlegend"></div>
 
       <div class="kpis">
         <div class="kpi"><span class="k">Break-even price</span><span class="v" id="bePrice"></span><span class="n" id="bePriceN"></span></div>
@@ -224,6 +231,8 @@ tr.sub td{color:var(--muted);font-size:13px}
         <p class="hint" id="taxNote"></p>
       </section>
 
+      <div id="dip-email"></div>
+      <div id="dip-next"></div>
     </aside>
   </div>
 </div>
@@ -236,9 +245,9 @@ DIP.mountHeader("rental");
 const $=id=>document.getElementById(id);
 const money=(n,d=0)=>(n<0?'−':'')+'$'+Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d});
 const pct=(n,d=1)=>(isFinite(n)?n.toFixed(d):'—')+'%';
-const FIELDS=['price','closePct','rehab','otherInc','vacancy','taxRate','taxAdd','taxFixed','ins','maint','capex','mgmt','leaseFee','util','hoa','otherExp','buyMode','ltv','rate','io','loanCostPct','helocRate','bridgeMo','landPct','csPct','bonusPct','fedRate','months'];
+const FIELDS=['target','price','closePct','rehab','otherInc','vacancy','taxRate','taxAdd','taxFixed','ins','maint','capex','mgmt','leaseFee','util','hoa','otherExp','buyMode','ltv','rate','io','loanCostPct','helocRate','bridgeMo','landPct','csPct','bonusPct','fedRate','months'];
 
-const EXAMPLE={name:'',example:true,price:1350000,closePct:1.5,rehab:0,otherInc:0,vacancy:4,taxRate:1.0,taxAdd:0.2,taxFixed:400,ins:3600,maint:5,capex:5,mgmt:8,leaseFee:50,util:250,hoa:0,otherExp:50,
+const EXAMPLE={name:'',example:true,target:0,price:1350000,closePct:1.5,rehab:0,otherInc:0,vacancy:4,taxRate:1.0,taxAdd:0.2,taxFixed:400,ins:3600,maint:5,capex:5,mgmt:8,leaseFee:50,util:250,hoa:0,otherExp:50,
   buyMode:'cashrefi',ltv:55,rate:7.0,io:'1',loanCostPct:1.5,helocRate:8.0,bridgeMo:6,landPct:55,csPct:25,bonusPct:100,fedRate:37,months:10,reps:true,
   units:[{l:'1 bd / 1 ba',r:2100},{l:'2 bd / 1 ba',r:2750},{l:'3 bd / 2 ba',r:3700}]};
 
@@ -258,7 +267,7 @@ function renderUnits(){
 function readUnits(){units=units.map((u,i)=>({l:$('ul'+i).value,r:+$('ur'+i).value||0}));}
 $('addUnit').onclick=()=>{readUnits();units.push({l:'Unit '+(units.length+1),r:0});renderUnits();markEdited();calc();};
 
-function load(d){d={taxAdd:0,taxFixed:0,leaseFee:0,...d};FIELDS.forEach(k=>{if(d[k]!==undefined)$(k).value=d[k];});$('reps').checked=!!d.reps;units=(d.units||[]).map(u=>({...u}));$('exampleTag').hidden=!d.example;$('bridgeFields').hidden=$('buyMode').value!=='cashrefi';renderUnits();calc();}
+function load(d){d={taxAdd:0,taxFixed:0,leaseFee:0,target:0,...d};FIELDS.forEach(k=>{if(d[k]!==undefined)$(k).value=d[k];});$('reps').checked=!!d.reps;units=(d.units||[]).map(u=>({...u}));$('exampleTag').hidden=!d.example;$('bridgeFields').hidden=$('buyMode').value!=='cashrefi';renderUnits();calc();}
 function snapshot(){readUnits();const d={name:(window.__dipBar&&window.__dipBar.label)||'',reps:$('reps').checked,units:units.map(u=>({...u}))};FIELDS.forEach(k=>d[k]=$(k).type==='number'?+$(k).value:$(k).value);return d;}
 function markEdited(){$('exampleTag').hidden=true;window.__dipBar&&window.__dipBar.changed();}
 
@@ -286,20 +295,23 @@ function model(v,priceOverride,rentOverride){
     dscr:pitia>0?gross/pitia:Infinity, cap:P>0?noi*12/P*100:0, coc:cashIn>0?cf*12/cashIn*100:Infinity};
 }
 
+const STICKY=DIP.mountSticky();
 function calc(){
   readUnits();const v=snapshot();const m=model(v);
   // break-evens (cash flow is linear in price and in rent)
   const m2=model(v,v.price+10000);const slopeP=(m2.cf-m.cf)/10000;const bePrice=slopeP<0?v.price-m.cf/slopeP:NaN;
   const r0=v.units.reduce((s,u)=>s+u.r,0);const m3=model(v,null,r0+1000);const slopeR=(m3.cf-m.cf)/1000;const beRent=slopeR>0?r0-m.cf/slopeR:NaN;
 
-  const pill=$('pill');
-  if(m.cf>=0){pill.className='pill good';pill.textContent='Pencils';}
-  else if(m.cf>=-300){pill.className='pill warn';pill.textContent='Close to break-even';}
-  else{pill.className='pill bad';pill.textContent="Doesn't pencil";}
+  const tgt=+v.target||0, diff=m.cf-tgt, color=diff>=0?'green':diff>=-250?'yellow':'red';
+  const pill=$('pill');pill.className='pill '+{green:'good',yellow:'warn',red:'bad'}[color];pill.textContent=DIP.VERDICT[color];
+  $('verdict').className='verdict '+color;$('vlight').innerHTML=DIP.light(color,22);
+  $('vlegend').innerHTML=DIP.legend([['green','Green',`cash flow at or above your target (${tgt?money(tgt)+'/mo':'$0 = break even'})`],['yellow','Yellow','up to $250/mo below it'],['red','Red','more than $250/mo below it']]);
+  STICKY.update(color,{green:'Green',yellow:'Yellow',red:'Red'}[color],money(m.cf)+'/mo','After refi · DSCR '+(isFinite(m.dscr)?m.dscr.toFixed(2):'—'));
+  window.__qc={color,m,v,bePrice,beRent};
   $('cfBig').innerHTML=`${money(m.cf)} <small>/ month after refi</small>`;
-  $('verdictTxt').textContent=m.cf>=0
+  $('verdictTxt').textContent=(tgt&&diff>=0?`Hits your ${money(tgt)}/mo target. `:tgt?`${money(-diff)}/mo short of your ${money(tgt)}/mo target. `:'')+(m.cf>=0
     ?`Rents cover the loan and all expenses with ${money(m.cf*12)} a year to spare.`
-    :`Holding costs ${money(-m.cf*12)} a year more than the rent brings in. To break even, the price needs to be about ${isFinite(bePrice)?money(bePrice):'—'} or the rent about ${isFinite(beRent)?money(beRent):'—'}/mo.`;
+    :`Holding costs ${money(-m.cf*12)} a year more than the rent brings in. To break even, the price needs to be about ${isFinite(bePrice)?money(bePrice):'—'} or the rent about ${isFinite(beRent)?money(beRent):'—'}/mo.`);
 
   const set=(id,txt,cls)=>{const el=$(id);el.textContent=txt;el.className='v'+(cls?' '+cls:'');};
   set('bePrice',isFinite(bePrice)?money(Math.round(bePrice/1000)*1000):'—',isFinite(bePrice)?(bePrice>=v.price?'good':'bad'):'');
@@ -361,7 +373,21 @@ window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'rental',
   setState:d=>load({...d,example:false}),
   reset:()=>load(BLANK),
   defaultLabel:()=>'Rental at '+money(+$('price').value||0),
-  summarize:d=>{const m=model(d);return {headline:money(m.cf)+'/mo',detail:money(d.price)+' · '+(d.units||[]).length+' unit'+((d.units||[]).length===1?'':'s')+' · DSCR '+(isFinite(m.dscr)?m.dscr.toFixed(2):'—'),tone:m.cf>=0?'good':'bad'}}});
+  summarize:d=>{const m=model(d);return {headline:money(m.cf)+'/mo',detail:money(d.price)+' · '+(d.units||[]).length+' unit'+((d.units||[]).length===1?'':'s')+' · DSCR '+(isFinite(m.dscr)?m.dscr.toFixed(2):'—'),tone:(m.cf-(+d.target||0))>=0?'good':(m.cf-(+d.target||0))>=-250?'warn':'bad'}},
+  report:()=>{calc();const q=window.__qc,m=q.m,v=q.v,t=id=>$(id).textContent;
+    return {title:'Rental Quick Check',subtitle:'Cash flow after the refi',
+      verdict:{color:q.color,headline:money(m.cf)+'/mo cash flow after refi',sub:t('verdictTxt')},
+      legend:[['green','Green',`at or above target (${(+v.target||0)?money(+v.target)+'/mo':'break even'})`],['yellow','Yellow','up to $250/mo below'],['red','Red','more than $250/mo below']],
+      blocks:[
+        {kpis:[['Purchase price',money(v.price)],['Rent (gross)',money(m.gross)+'/mo'],['Loan',money(m.loan)+' at '+v.rate+'%'],
+               ['Break-even price',t('bePrice'),t('bePriceN')],['Break-even rent',t('beRent'),t('beRentN')],['DSCR',t('dscr'),'Lender minimum 1.15'],
+               ['Cap rate',t('cap'),t('capN')],['Cash left in deal',t('cashIn')],['Cash-on-cash',t('coc')]]},
+        {node:$('pl'),title:'Monthly, after refi'},
+        {node:$('tax'),title:'Year 1 with tax savings'},
+        {note:$('taxNote').textContent+' Estimates only; not financial, legal or tax advice.'}]}}});
+DIP.mountEmail({el:'dip-email',calc:'rental',getState:snapshot,getLabel:()=>window.__dipBar.label,
+  summarize:d=>{const m=model(d);return {headline:money(m.cf)+'/mo after refi',detail:money(d.price)+' · DSCR '+(isFinite(m.dscr)?m.dscr.toFixed(2):'—')}}});
+DIP.mountNext('dip-next','underwriting','Want the full picture? Run a purchase loan, a 10-year projection with IRR, an ADU scenario and a cost seg tax analysis.');
 })();
 </script>
 

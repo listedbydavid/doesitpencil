@@ -194,6 +194,8 @@ tr.tot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
         <h2>The napkin math</h2>
         <table id="math"></table>
       </section>
+      <div id="dip-email"></div>
+      <div id="dip-next"></div>
     </aside>
   </div>
 </div>
@@ -246,6 +248,7 @@ function maxPrice(d,ok){ // highest price where ok(model) is true
 function read(){const d={};F.forEach(k=>{const el=$(k);d[k]=el.tagName==='SELECT'?el.value:(el.value===''?'':+el.value)});return d}
 function load(d){d={...EXAMPLE,...d};F.forEach(k=>{if(d[k]!==undefined)$(k).value=d[k]});calc()}
 
+const STICKY=DIP.mountSticky();
 function calc(){
   const d=read();
   $('loanPctWrap').hidden=d.loanMode!=='pct';$('loanAmtWrap').hidden=d.loanMode!=='amt';
@@ -285,6 +288,7 @@ function calc(){
     r(`Points (${d.points}%)`,-m.points,'sub')+r(`Interest, ${m.months} mo at ${d.rate}%`,-m.interest,'sub')+
     r(`Taxes, insurance, utilities, ${m.months} mo`,-m.hold,'sub')+
     r('Profit',m.profit,'tot');
+  STICKY.update(m.color,{green:'Green',yellow:'Yellow',red:'Red'}[m.color],money(m.profit)+' profit',pct(m.margin)+' of ARV');
 }
 
 F.forEach(k=>{$(k).addEventListener('input',()=>{$('exTag').hidden=true;window.__dipBar&&window.__dipBar.changed();calc()});
@@ -296,7 +300,21 @@ window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'napkin',
   reset:()=>{load({...EXAMPLE,price:'',arv:'',rehab:'',loanAmt:''});$('exTag').hidden=true},
   defaultLabel:d=>'Flip at '+money(+d.price||0),
   summarize:d=>{const m=model(d);return {headline:(m.color==='green'?'Green':m.color==='yellow'?'Yellow':'Red')+' · '+kmoney(m.profit)+' profit',
-    detail:money(+d.price||0)+' buy · '+money(+d.arv||0)+' ARV · '+pct(m.margin)+' margin',tone:m.color==='green'?'good':m.color==='red'?'bad':'warn'}}});
+    detail:money(+d.price||0)+' buy · '+money(+d.arv||0)+' ARV · '+pct(m.margin)+' margin',tone:m.color==='green'?'good':m.color==='red'?'bad':'warn'}},
+  report:()=>{const d=read(),m=model(d);
+    return {title:'Deal Napkin',subtitle:'Quick flip check',
+      verdict:{color:m.color,headline:money(m.profit)+' profit · '+pct(m.margin,2)+' of ARV',sub:$('vmsg').textContent},
+      legend:[['green','Green','profit is 8% of ARV or more'],['yellow','Yellow','6% to 7.99%'],['red','Red','5.99% or less']],
+      blocks:[
+        {kpis:[['Purchase price',money(m.price)],['ARV',money(m.arv)],['Rehab with contingency',money(m.rehab)],
+               ['Max offer for green',$('maxGreen').textContent],['Break-even price',$('maxBE').textContent],['Cash you need',money(m.cash),'Borrowing '+money(m.loan)],
+               ['Return on cash',pct(m.roi,0),'Annualized over '+m.months+' mo'],['Months held',String(m.months)],['Interest rate',d.rate+'%']]},
+        {node:$('checks'),title:'Deal checks'},
+        {node:$('math'),title:'The napkin math'},
+        {note:'Interest is figured on the full loan for every month held. Selling costs cover agent commissions and seller closing costs. Estimates only; not financial, legal or tax advice.'}]}}});
+DIP.mountEmail({el:'dip-email',calc:'napkin',getState:read,getLabel:()=>window.__dipBar.label,
+  summarize:d=>{const m=model(d);return {headline:{green:'Green',yellow:'Yellow',red:'Red'}[m.color]+' · '+money(m.profit)+' profit',detail:pct(m.margin)+' of ARV · max offer for green '+$('maxGreen').textContent}}});
+DIP.mountNext('dip-next','flip','Thinking about adding units or building instead of a straight flip? Compare up to four exit plans side by side.');
 })();
 </script>
 

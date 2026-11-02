@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rental Underwriting Calculator · Does It Pencil?</title>
+<meta name="description" content="Free rental property underwriting calculator: cash flow, cash-on-cash, cap rate, DSCR, sensitivity grid, 10-year projection with IRR, plus optional ADU and cost segregation tax analysis.">
+<meta property="og:title" content="Rental Underwriting Calculator · Does It Pencil?">
+<meta property="og:description" content="Free rental property underwriting calculator: cash flow, cash-on-cash, cap rate, DSCR, sensitivity grid, 10-year projection with IRR, plus optional ADU and cost segregation tax analysis.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://doesitpencil.org/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Does It Pencil?">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://doesitpencil.org/assets/og-image.png">
+<meta property="og:url" content="https://doesitpencil.org/rental-underwriting/">
+<link rel="canonical" href="https://doesitpencil.org/rental-underwriting/">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface2:#eef1f5; --text:#111418; --muted:#5c6470; --border:#d9dee6;
+  --accent:#2b3c97; --accent-ink:#ffffff; --hl:#f6eb16;
+  --good:#23794b; --good-bg:#dff1e6; --bad:#b93a27; --bad-bg:#f9e1dc; --warn:#9a6400; --warn-bg:#faefd2;
+  --s1:#111418; --s2:#2b3c97; --s3:#6c7bd0; --s4:#aab3e8; --s5:#7a8a9c; --s6:#b6c0cb; --s7:#f36c21; --s8:#d9dee4;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151b; --surface:#1a1f27; --surface2:#212733; --text:#e8ebf0; --muted:#9aa3b0; --border:#2b313c;
+    --accent:#9aa8ff; --accent-ink:#0d1020; --hl:#a89a12;
+    --good:#5cc68c; --good-bg:#15321f; --bad:#ef7b67; --bad-bg:#3a1a15; --warn:#e9b44c; --warn-bg:#352812;
+    --s1:#e8ebf0; --s2:#9aa8ff; --s3:#5d6bc4; --s4:#3a4590; --s5:#8594a5; --s6:#51606f; --s7:#f36c21; --s8:#2b313c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151b; --surface:#1a1f27; --surface2:#212733; --text:#e8ebf0; --muted:#9aa3b0; --border:#2b313c;
+  --accent:#9aa8ff; --accent-ink:#0d1020; --hl:#a89a12;
+  --good:#5cc68c; --good-bg:#15321f; --bad:#ef7b67; --bad-bg:#3a1a15; --warn:#e9b44c; --warn-bg:#352812;
+  --s1:#e8ebf0; --s2:#9aa8ff; --s3:#5d6bc4; --s4:#3a4590; --s5:#8594a5; --s6:#51606f; --s7:#f36c21; --s8:#2b313c;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums;-webkit-text-size-adjust:100%}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;align-items:center;gap:12px;padding:16px 20px;flex-wrap:wrap;max-width:1320px;margin:0 auto}
+.top h1{font-size:20px;font-weight:800;letter-spacing:-.01em;margin:0;flex:1 1 auto}
+.top h1 small{display:block;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
+.btn{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:hover{filter:brightness(.97)}
+
+.layout{display:grid;gap:20px;padding:0 20px 40px;max-width:1320px;margin:0 auto}
+@media(min-width:1000px){.layout{grid-template-columns:400px 1fr;align-items:start}}
+
+/* inputs */
+.inputs{display:flex;flex-direction:column;gap:10px}
+.dealname{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:12px 14px;font-weight:700;font-size:16px}
+details.sec{background:var(--surface);border:1px solid var(--border);border-radius:10px}
+details.sec>summary{list-style:none;cursor:pointer;padding:13px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary .sum{font-weight:500;color:var(--muted);font-size:13px;text-align:right}
+details.sec>summary::after{content:"+";font-weight:600;color:var(--muted);margin-left:6px}
+details.sec[open]>summary::after{content:"–"}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 12px;padding:2px 16px 16px}
+.field{display:flex;flex-direction:column;gap:4px;grid-column:span 2;min-width:0}
+.field.half{grid-column:span 1}
+.lbl{font-size:13px;font-weight:600;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted)}
+.inp{position:relative;display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px}
+.inp input{border:0;background:transparent;width:100%;padding:9px 10px;font-size:15px;font-weight:600;min-width:0}
+.inp input:focus{outline:none}
+.inp:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent)}
+.inp.pre::before{content:"$";padding-left:10px;color:var(--muted);font-weight:600}
+.inp.pre input{padding-left:4px}
+.inp.suf::after{content:"%";padding-right:10px;color:var(--muted);font-weight:600}
+.units{grid-column:span 2;display:flex;flex-direction:column;gap:8px}
+.unit{display:grid;grid-template-columns:1fr 130px 32px;gap:8px;align-items:center}
+.unit .inp input{font-weight:500}
+.unit .rm{border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+.addunit{justify-self:start;border:1px dashed var(--border);background:none;border-radius:8px;padding:7px 12px;font-weight:600;color:var(--accent);cursor:pointer;font-size:13px}
+
+/* results */
+.results{display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.panel h2{font-size:16px;margin:0 0 12px;font-weight:700}
+.panel h2 .aside{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
+
+.verdict{border-radius:14px;padding:20px;border:1px solid var(--border);background:var(--surface);position:relative;overflow:hidden}
+.verdict .status{display:inline-block;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px}
+.verdict.good .status{background:var(--good-bg);color:var(--good)}
+.verdict.bad .status{background:var(--bad-bg);color:var(--bad)}
+.verdict.warn .status{background:var(--warn-bg);color:var(--warn)}
+.bignum{font-size:clamp(40px,8vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1;margin:14px 0 4px;display:inline-block;position:relative;z-index:0}
+.bignum::after{content:"";position:absolute;left:-4px;right:-6px;bottom:4px;height:.32em;background:var(--hl);z-index:-1;border-radius:3px;transform:skewX(-8deg);opacity:.85}
+.verdict.bad .bignum{color:var(--bad)}
+.verdict .sub{color:var(--muted);font-size:14px}
+.verdict .gap{margin-top:12px;font-size:14px;font-weight:500}
+.rentbar{margin-top:18px}
+.rentbar .bar{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--surface2);border:1px solid var(--border)}
+.rentbar .bar span{height:100%;min-width:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.rentbar .cap{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(min-width:640px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:1180px){.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.m{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;border-left-width:4px}
+.m .k{font-size:12.5px;color:var(--muted);font-weight:600}
+.m .v{font-size:22px;font-weight:800;letter-spacing:-.01em;margin-top:2px}
+.m .d{font-size:12px;color:var(--muted);margin-top:2px}
+.m.good{border-left-color:var(--good)} .m.bad{border-left-color:var(--bad)} .m.warn{border-left-color:var(--warn)} .m.neutral{border-left-color:var(--border)}
+
+.alerts{display:flex;flex-direction:column;gap:8px}
+.alert{padding:10px 14px;border-radius:8px;font-size:14px}
+.alert.bad{background:var(--bad-bg);color:var(--bad)}
+.alert.warn{background:var(--warn-bg);color:var(--warn)}
+
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 10px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:12.5px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+tbody tr+tr td{border-top:1px solid color-mix(in srgb,var(--border) 60%,transparent)}
+tr.group td{font-weight:700;padding-top:14px;border-top:0!important;color:var(--muted);font-size:12.5px}
+tr.total td{font-weight:700;border-top:1px solid var(--border)!important}
+tr.net td{font-weight:800;font-size:15px;border-top:2px solid var(--text)!important}
+.neg{color:var(--bad)} .pos{color:var(--good)}
+tr.hold td{background:color-mix(in srgb,var(--hl) 22%,transparent)}
+
+.sens td,.sens th{text-align:center;padding:8px 6px;font-size:13px}
+.sens td.cell{border-radius:4px;font-weight:700;border:2px solid var(--surface)!important}
+.sens td.base{outline:2px solid var(--text);outline-offset:-3px}
+.sens th.rowh{text-align:left;color:var(--muted);font-weight:600}
+
+.inp select{border:0;background:transparent;width:100%;padding:9px 10px;font-size:15px;font-weight:600;min-width:0}
+.inp select:focus{outline:none}
+.taxhero{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.taxhero div{background:var(--surface2);border-radius:10px;padding:12px 14px}
+.taxhero .k{font-size:12.5px;color:var(--muted);font-weight:600}
+.taxhero .v{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.taxhero .d{font-size:12px;color:var(--muted)}
+.panel h3{font-size:14px;margin:18px 0 8px;font-weight:700}
+.alert.info{background:var(--surface2);color:var(--text)}
+.switch{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;cursor:pointer;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:6px 12px 6px 8px;user-select:none}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.switch .track{width:36px;height:20px;border-radius:999px;background:var(--border);position:relative;transition:background .15s}
+.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.switch input:checked+.track{background:var(--accent)}
+.switch input:checked+.track::after{transform:translateX(16px)}
+.switch input:focus-visible+.track{outline:2px solid var(--accent);outline-offset:2px}
+body:not(.tax-on) .taxonly{display:none!important}
+body:not(.adu-on) .aduonly{display:none!important}
+.aduband{border-top:4px solid var(--s7)}
+.taxband{border-top:4px solid var(--accent)}
+.saved td .lnk{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer;padding:0}
+.saved td .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
+.empty{color:var(--muted);font-size:14px}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+
+.sticky{position:sticky;top:0;z-index:5;background:var(--text);color:var(--bg);display:flex;justify-content:space-between;gap:10px;padding:10px 20px;padding-top:calc(10px + env(safe-area-inset-top,0px));font-weight:700;font-size:14px}
+.sticky .sv{font-weight:800}
+@media(min-width:1000px){.sticky{display:none}}
+html.embedded .sticky{display:none}
+@media (prefers-reduced-motion:no-preference){.bignum{transition:color .2s}}
+.vhead{display:flex;align-items:center;gap:10px}
+#vLegend .dip-legend{padding:0 4px}
+.savewrap{max-width:1320px;margin:0 auto;padding:0 20px 14px}
+.savecard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+#stLight .dip-light{flex-direction:row;padding:3px 5px;margin-right:4px}
+.sticky{background:#111418!important;color:#fff!important;font-size:13px;flex-wrap:wrap;gap:4px 14px;padding-left:max(16px,env(safe-area-inset-left,0px))!important;padding-right:max(16px,env(safe-area-inset-right,0px))!important}
+.sticky>span{white-space:nowrap}
+.top .btn,.switch{font-family:inherit}
+</style>
+</head>
+<body>
+<div id="dip-header"></div>
+<section class="dip-cta dip-cta-top" aria-labelledby="cta-top-h"><div class="dip-in">
+  <div>
+    <p class="eyebrow">Real Estate Cheat Codes community</p>
+    <h2 id="cta-top-h">The calculator tells you if it pencils. The community shows you how to make it pencil.</h2>
+    <p>Join our private Real Estate Cheat Codes community on Skool for ongoing support and lessons from investors, agents and developers doing deals right now.</p>
+    <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=rental-underwriting-top" target="_blank" rel="noopener">Join the community on Skool →</a>
+    <p class="fine">See what's included and sign up on Skool.</p>
+  </div>
+  <ul>
+    <li>Ongoing lessons on investing, flipping, wholesaling and more</li>
+    <li>Monthly live community calls</li>
+    <li>The strategies top performers use to scale</li>
+    <li>A private network of investors, agents and developers</li>
+  </ul>
+</div></section>
+
+<div class="sticky" id="sticky"><span><span id="stLight"></span> Cash flow <span class="sv" id="stCF">—</span></span><span>CoC <span class="sv" id="stCoC">—</span></span><span>DSCR <span class="sv" id="stDSCR">—</span></span></div>
+
+<header class="top">
+  <h1>Rental Underwriting<small>The full buy-and-hold analysis. Change any number and everything recalculates.</small></h1>
+  <label class="switch"><input type="checkbox" id="aduToggle"><span class="track"></span>ADU scenario</label>
+  <label class="switch"><input type="checkbox" id="taxToggle"><span class="track"></span>Tax analysis</label>
+  <button class="btn" id="resetBtn" type="button">Reset</button>
+</header>
+<div class="savewrap"><div class="savecard"><div id="dip-savebar"></div></div></div>
+
+<div class="layout">
+  <aside class="inputs" id="inputs">
+    <input class="dealname" id="dealname" aria-label="Deal name" placeholder="Address or deal name" hidden>
+  </aside>
+
+  <main class="results">
+    <section class="verdict" id="verdict">
+      <div class="vhead"><span id="vLight"></span><span class="status" id="vStatus">—</span></div>
+      <div><span class="bignum" id="vCF">—</span></div>
+      <div class="sub" id="vSub"></div>
+      <div class="sub aduonly" id="vAdu" style="margin-top:4px;font-weight:600"></div>
+      <div class="sub taxonly" id="vTax" style="margin-top:4px;font-weight:600"></div>
+      <div class="gap" id="vGap"></div>
+      <div class="rentbar">
+        <div class="cap"><span>Where each month's rent goes</span><span id="barCap"></span></div>
+        <div class="bar" id="bar"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </section>
+
+    <div id="vLegend"></div>
+    <div class="alerts" id="alerts"></div>
+
+    <div class="metrics" id="metrics"></div>
+
+    <section class="panel">
+      <h2>Monthly pro forma<span class="aside">Year 1</span></h2>
+      <div class="scroll"><table id="pf"></table></div>
+    </section>
+
+    <section class="panel aduband aduonly" id="aduPanel">
+      <h2>ADU add-on<span class="aside">Year 1 after the ADU is rented</span></h2>
+      <div class="taxhero" id="aduHero"></div>
+      <div class="scroll"><table id="aduCmp"></table></div>
+      <p class="note" id="aduNote"></p>
+    </section>
+
+    <section class="panel taxband taxonly" id="taxPanel">
+      <h2>Tax write-offs<span class="aside">Depreciation &amp; cost segregation</span></h2>
+      <div class="taxhero" id="taxHero"></div>
+      <div class="alert info" id="taxNote"></div>
+      <h3>Standard depreciation vs. cost segregation</h3>
+      <div class="scroll"><table id="taxCmp"></table></div>
+      <h3>Year by year with cost segregation</h3>
+      <div class="scroll"><table id="taxYrs"></table></div>
+      <p class="note">Estimates only, not tax advice — confirm with a CPA before relying on them. Federal uses bonus depreciation on 5- and 15-year property; California doesn't allow bonus depreciation and doesn't recognize REPS. Recapture is approximate: 5-year property at ordinary rates, the rest at up to 25% federally, all at the CA rate. A 1031 exchange defers recapture. Capital gains tax and the 3.8% NIIT aren't included. CapEx reserve isn't deductible until spent.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Sensitivity<span class="aside">Monthly cash flow at different prices and rents</span></h2>
+      <div class="scroll"><table class="sens" id="sens"></table></div>
+      <p class="note">Outlined cell is the current deal. Use this to see how much of a price cut or rent bump it takes to hit your target.</p>
+    </section>
+
+    <section class="panel">
+      <h2>10-year projection<span class="aside" id="projAside"></span></h2>
+      <div class="scroll"><table id="proj"></table></div>
+      <p class="note">Property tax grows at the lesser of your expense growth or 2%/yr (Prop 13). PMI drops once the loan reaches 78% of purchase price. Equity is after selling costs. Excludes depreciation and income-tax effects.</p>
+    </section>
+
+    <div id="dip-email"></div>
+    <div id="dip-next"></div>
+  </main>
+</div>
+
+<section class="dip-cta-bottom" aria-label="Join the community"><div class="dip-in">
+  <p><b>Want help making the numbers work?</b> Get ongoing support and lessons in the private Real Estate Cheat Codes community.</p>
+  <a class="go" href="https://www.skool.com/realestatecheatcodes/about?utm_source=doesitpencil&amp;utm_medium=website&amp;utm_campaign=community_cta&amp;utm_content=rental-underwriting-bottom" target="_blank" rel="noopener">Join on Skool →</a>
+</div></section>
+<footer class="dip-foot"><div class="dip-in">
+<p class="dip-legal"><b>Educational use only.</b> Does It Pencil? is a free educational tool, not financial, investment, legal, tax, lending or real estate advice. Results are estimates based on your inputs and are not guaranteed. Consult licensed professionals before making any decision. By using this site you agree to the <a href="../terms/index.html">Terms of Use</a>, including its disclaimer of warranties, limitation of liability, and hold harmless and indemnification provisions.</p>
+<p class="dip-legal">© 2026 D &amp; A Ventures LLC, doing business as Real Estate Cheat Codes. All rights reserved. The calculators, formulas, source code, reports, content and the names Does It Pencil? and Deal Napkin are the intellectual property of D &amp; A Ventures LLC and may not be copied, reproduced or redistributed without written permission. Saved calculations stay in your browser. · <a href="../terms/index.html">Terms of Use</a></p>
+</div></footer>
+<script src="../assets/tracking.js"></script>
+<script src="../assets/site.js"></script>
+<script>DIP.mountHeader("underwriting");</script>
+<script>
+if(window.parent!==window)document.documentElement.classList.add("embedded");
+const DEFAULTS={
+  name:"Sample – $875K, $250K cash",
+  price:875000, downAmt:218750, downPct:25, downLock:"pct", cashAvail:250000,
+  rate:7.0, term:30, points:0, closingPct:2, pmiRate:0.6,
+  units:[{label:"Main house",rent:4300}],
+  otherInc:0, vacancy:5,
+  taxRate:1.2, mello:0, insurance:2400, hoa:0,
+  pmPct:8, maintPct:5, capexPct:5, utilities:0, otherExp:0,
+  reno:0,
+  showTax:false, showAdu:false, aduCost:250000, aduRent:2500, aduMonths:8, aduValue:250000, aduIns:400, aduUtil:0, aduFund:"loan", aduRate:8.5, aduTerm:30,
+   taxStatus:"passive", magi:400000, fedRate:32, caRate:9.3, landPct:55, inMonth:1, bonusPct:100, cs5:15, cs15:8, csFee:4000,
+  target:0, appreciation:4, rentGrowth:3, expGrowth:3, sellCost:6, hold:5
+};
+const SECTIONS=[
+  {id:"loan",title:"Purchase & financing",open:true,fields:[
+    {k:"price",l:"Purchase price",t:"$"},
+    {k:"downAmt",l:"Down payment",t:"$",half:true},
+    {k:"downPct",l:"Down %",t:"%",half:true},
+    {k:"cashAvail",l:"Total cash available",t:"$",h:"Down payment, closing costs and renovation all come out of this"},
+    {k:"rate",l:"Interest rate",t:"%",half:true},
+    {k:"term",l:"Term (years)",t:"n",half:true},
+    {k:"closingPct",l:"Closing costs",t:"%",half:true,h:"Of price"},
+    {k:"points",l:"Points",t:"%",half:true,h:"Of loan"},
+    {k:"pmiRate",l:"PMI rate (annual)",t:"%",h:"Only applies with less than 20% down"}
+  ]},
+  {id:"income",title:"Rent & income",open:true,units:true,fields:[
+    {k:"otherInc",l:"Other income / mo",t:"$",half:true,h:"Parking, laundry, storage"},
+    {k:"vacancy",l:"Vacancy",t:"%",half:true,h:"5% ≈ 18 days a year"}
+  ]},
+  {id:"tax",title:"Taxes, insurance & HOA",fields:[
+    {k:"taxRate",l:"Property tax rate",t:"%",half:true,h:"San Diego ≈ 1.1–1.25% of price"},
+    {k:"mello",l:"Mello-Roos / yr",t:"$",half:true,h:"Plus other special assessments"},
+    {k:"insurance",l:"Landlord insurance / yr",t:"$",half:true},
+    {k:"hoa",l:"HOA / mo",t:"$",half:true}
+  ]},
+  {id:"ops",title:"Management & maintenance",fields:[
+    {k:"pmPct",l:"Property management",t:"%",half:true,h:"Of collected rent; 0 to self-manage"},
+    {k:"maintPct",l:"Repairs & maintenance",t:"%",half:true,h:"Of gross rent"},
+    {k:"capexPct",l:"CapEx reserve",t:"%",half:true,h:"Roof, HVAC, water heater"},
+    {k:"utilities",l:"Owner-paid utilities / mo",t:"$",half:true,h:"Water, sewer, trash"},
+    {k:"otherExp",l:"Other expenses / mo",t:"$"}
+  ]},
+  {id:"reno",title:"Renovation",fields:[
+    {k:"reno",l:"Upfront renovation budget",t:"$",h:"Paid in cash at purchase; counts toward cash invested"}
+  ]},
+  {id:"adu",title:"ADU add-on",fields:[
+    {k:"aduCost",l:"Build cost (all-in)",t:"$",half:true,h:"Design, permits, fees, construction"},
+    {k:"aduRent",l:"ADU rent / mo",t:"$",half:true},
+    {k:"aduMonths",l:"Build time (months)",t:"n",half:true,h:"Design through certificate of occupancy"},
+    {k:"aduValue",l:"Value added",t:"$",half:true,h:"Also the added assessed value for property tax"},
+    {k:"aduIns",l:"Added insurance / yr",t:"$",half:true},
+    {k:"aduUtil",l:"Added owner utilities / mo",t:"$",half:true},
+    {k:"aduFund",l:"How it's paid for",t:"sel",opts:[["loan","Financed (HELOC, construction or reno loan)"],["cash","Cash"]]},
+    {k:"aduRate",l:"ADU loan rate",t:"%",half:true},
+    {k:"aduTerm",l:"ADU loan term (yrs)",t:"n",half:true}
+  ]},
+  {id:"taxs",title:"Tax strategy",fields:[
+    {k:"taxStatus",l:"How rental losses are treated",t:"sel",opts:[["passive","Passive – W-2 earner"],["reps","Real estate professional (REPS)"],["str","Short-term rental, materially participating"]]},
+    {k:"magi",l:"Household income (MAGI)",t:"$",half:true},
+    {k:"fedRate",l:"Federal marginal rate",t:"%",half:true},
+    {k:"caRate",l:"CA marginal rate",t:"%",half:true},
+    {k:"landPct",l:"Land share of price",t:"%",half:true,h:"Not depreciable; use assessor's split"},
+    {k:"inMonth",l:"Month placed in service",t:"n",half:true,h:"1 = Jan, 12 = Dec"},
+    {k:"bonusPct",l:"Bonus depreciation",t:"%",half:true,h:"100% if acquired after 1/19/2025"},
+    {k:"cs5",l:"Cost seg: 5-yr property",t:"%",half:true,h:"Of building; often 10–20%"},
+    {k:"cs15",l:"Cost seg: 15-yr property",t:"%",half:true,h:"Of building; often 5–10%"},
+    {k:"csFee",l:"Cost seg study fee",t:"$",h:"Deducted in year 1"}
+  ]},
+  {id:"exit",title:"Target, growth & exit",fields:[
+    {k:"target",l:"Target cash flow / mo",t:"$",h:"0 = break even after all expenses and reserves"},
+    {k:"appreciation",l:"Appreciation / yr",t:"%",half:true},
+    {k:"rentGrowth",l:"Rent growth / yr",t:"%",half:true},
+    {k:"expGrowth",l:"Expense growth / yr",t:"%",half:true},
+    {k:"sellCost",l:"Selling costs",t:"%",half:true},
+    {k:"hold",l:"Hold period (years, 1–10)",t:"n"}
+  ]}
+];
+const FT={};SECTIONS.forEach(s=>s.fields.forEach(f=>FT[f.k]=f.t));
+
+let S=load();
+function load(){
+  try{const raw=localStorage.getItem("dip:uw:current");if(raw){const o=JSON.parse(raw);return Object.assign(structuredClone(DEFAULTS),o)}}catch(e){}
+  return structuredClone(DEFAULTS);
+}
+function persist(){try{localStorage.setItem("dip:uw:current",JSON.stringify(S))}catch(e){}}
+
+/* ---------- formatting ---------- */
+const $=id=>document.getElementById(id);
+function money(v,opt={}){
+  if(!isFinite(v))return "—";
+  const a=Math.abs(v), s=v<0?"−":(opt.sign&&v>0?"+":"");
+  if(opt.short&&a>=1e6)return s+"$"+(a/1e6).toFixed(a>=1e7?1:2)+"M";
+  if(opt.short&&a>=1e4)return s+"$"+Math.round(a/1e3)+"K";
+  return s+"$"+Math.round(a).toLocaleString("en-US");
+}
+function pct(v,d=1){return isFinite(v)?(v*100).toFixed(d)+"%":"—"}
+function num(v){const n=parseFloat(String(v).replace(/[^0-9.\-]/g,""));return isFinite(n)?n:0}
+function fmtField(t,v){
+  if(t==="$")return Math.round(v).toLocaleString("en-US");
+  if(t==="%")return String(Math.round(v*1000)/1000);
+  return String(v);
+}
+
+/* ---------- inputs ---------- */
+function buildInputs(){
+  const box=$("inputs");
+  SECTIONS.forEach(sec=>{
+    const d=document.createElement("details");d.className="sec"+(sec.id==="taxs"?" taxonly taxband":"")+(sec.id==="adu"?" aduonly aduband":"");d.id="sec-"+sec.id;if(sec.open)d.open=true;
+    d.innerHTML=`<summary><span>${sec.title}</span><span class="sum" id="sum-${sec.id}"></span></summary><div class="grid">${sec.units?'<div class="units" id="units"></div>':""}${sec.fields.map(f=>`
+      <label class="field${f.half?" half":""}"><span class="lbl">${f.l}</span>
+      ${f.t==="sel"?`<span class="inp"><select data-k="${f.k}">${f.opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("")}</select></span>`:`<span class="inp${f.t==="$"?" pre":""}${f.t==="%"?" suf":""}"><input data-k="${f.k}" inputmode="decimal" autocomplete="off"></span>`}
+      ${f.h?`<span class="hint">${f.h}</span>`:""}</label>`).join("")}</div>`;
+    box.appendChild(d);
+  });
+  box.addEventListener("input",e=>{
+    const el=e.target;
+    if(el.dataset.k){onField(el.dataset.k,FT[el.dataset.k]==="sel"?el.value:num(el.value));}
+    else if(el.dataset.u!==undefined){const i=+el.dataset.u;if(el.dataset.f==="label")S.units[i].label=el.value;else S.units[i].rent=num(el.value);recalc();}
+  });
+  box.addEventListener("focusout",e=>{
+    const el=e.target;
+    if(el.dataset.k&&FT[el.dataset.k]!=="sel")el.value=fmtField(FT[el.dataset.k],S[el.dataset.k]);
+    if(el.dataset.f==="rent")el.value=fmtField("$",S.units[+el.dataset.u].rent);
+  });
+  box.addEventListener("click",e=>{
+    const rm=e.target.closest(".rm");
+    if(rm){S.units.splice(+rm.dataset.i,1);renderUnits();recalc();}
+    if(e.target.closest(".addunit")){S.units.push({label:"Unit "+(S.units.length+1),rent:0});renderUnits();recalc();}
+  });
+  $("dealname").addEventListener("input",e=>{S.name=e.target.value;persist()});
+}
+function renderUnits(){
+  const u=$("units");
+  u.innerHTML=`<span class="lbl">Monthly rent by unit</span>`+S.units.map((x,i)=>`
+    <div class="unit"><span class="inp"><input data-u="${i}" data-f="label" value="${x.label.replace(/"/g,"&quot;")}" aria-label="Unit name"></span>
+    <span class="inp pre"><input data-u="${i}" data-f="rent" inputmode="decimal" value="${fmtField("$",x.rent)}" aria-label="Rent for ${x.label.replace(/"/g,"&quot;")}"></span>
+    ${S.units.length>1?`<button class="rm" type="button" data-i="${i}" aria-label="Remove unit">×</button>`:"<span></span>"}</div>`).join("")+
+    (S.units.length<8?`<button class="addunit" type="button">+ Add unit</button>`:"")+`<span class="hint">Enter market rent. For house + ADU or duplex, list each unit.</span>`;
+}
+function onField(k,v){
+  S[k]=v;
+  if(k==="downAmt"){S.downLock="amt";S.downPct=S.price?v/S.price*100:0;setField("downPct")}
+  else if(k==="downPct"){S.downLock="pct";S.downAmt=S.price*v/100;setField("downAmt")}
+  else if(k==="price"){
+    if(S.downLock==="pct"){S.downAmt=v*S.downPct/100;setField("downAmt")}
+    else{S.downPct=v?S.downAmt/v*100:0;setField("downPct")}
+  }
+  recalc();
+}
+function setField(k){const el=document.querySelector(`[data-k="${k}"]`);if(el&&document.activeElement!==el)el.value=FT[k]==="sel"?S[k]:fmtField(FT[k],S[k])}
+function fillAll(){Object.keys(FT).forEach(setField);$("dealname").value=S.name||"";renderUnits()}
+
+/* ---------- model ---------- */
+function pmt(P,rateAnnual,years){const n=years*12,r=rateAnnual/100/12;if(P<=0||n<=0)return 0;return r?P*r/(1-Math.pow(1+r,-n)):P/n}
+function calc(s,o={}){
+  const price=o.price??s.price;
+  const down=Math.min(s.downLock==="pct"?price*s.downPct/100:s.downAmt,price);
+  const loan=Math.max(price-down,0);
+  const pi=pmt(loan,s.rate,s.term);
+  const ltv=price?loan/price:0;
+  const pmi=ltv>0.8?loan*s.pmiRate/100/12:0;
+  const rentScale=o.rentScale??1;
+  const adu=!!o.adu;
+  const aduCost=o.aduCost??s.aduCost;
+  const aduDebt=adu&&s.aduFund==="loan"?pmt(aduCost,s.aduRate,s.aduTerm):0;
+  const gross=(s.units.reduce((a,u)=>a+(+u.rent||0),0)+(adu?(o.aduRent??s.aduRent):0))*rentScale;
+  const vac=gross*s.vacancy/100;
+  const egi=gross-vac+s.otherInc;
+  const tax=(price+(adu?s.aduValue:0))*s.taxRate/100/12+s.mello/12;
+  const ins=(s.insurance+(adu?s.aduIns:0))/12;
+  const util=s.utilities+(adu?s.aduUtil:0);
+  const pm=egi*s.pmPct/100, maint=gross*s.maintPct/100, capex=gross*s.capexPct/100;
+  const opex=tax+ins+s.hoa+pm+maint+capex+util+s.otherExp;
+  const noi=egi-opex, debt=pi+pmi+aduDebt, cf=noi-debt;
+  const closing=price*s.closingPct/100, pts=loan*s.points/100;
+  const cashIn=down+closing+pts+s.reno+(adu&&s.aduFund==="cash"?aduCost:0);
+  const piti=pi+tax+ins+pmi+s.hoa;
+  // CF is linear in gross rent: slope per $1 of gross
+  const slope=(1-s.vacancy/100)*(1-s.pmPct/100)-s.maintPct/100-s.capexPct/100;
+  const beRent=slope>0?gross+(s.target-cf)/slope:Infinity;
+  return {aduDebt,price,down,loan,ltv,pi,pmi,gross,vac,egi,tax,ins,hoa:s.hoa,pm,maint,capex,util,other:s.otherExp,opex,noi,debt,cf,closing,pts,cashIn,piti,beRent,
+    cashLeft:s.cashAvail-cashIn,capRate:price?noi*12/price:0,coc:cashIn>0?cf*12/cashIn:NaN,dscr:debt>0?noi/debt:Infinity,
+    grm:gross>0?price/(gross*12):NaN,rtp:price?gross/price:0,expRatio:egi>0?opex/egi:NaN};
+}
+function maxPrice(s){
+  const f=p=>calc(s,{price:p}).cf-s.target;
+  let lo=1000,hi=20000000;
+  if(f(lo)<0)return 0;
+  if(f(hi)>=0)return hi;
+  for(let i=0;i<70;i++){const m=(lo+hi)/2;if(f(m)>=0)lo=m;else hi=m}
+  return lo;
+}
+function project(s,b){
+  const rows=[];let bal=b.loan;const r=s.rate/100/12;let cum=0;
+  const taxG=Math.min(s.expGrowth,2)/100;
+  for(let y=1;y<=10;y++){
+    const rg=Math.pow(1+s.rentGrowth/100,y-1),eg=Math.pow(1+s.expGrowth/100,y-1),tg=Math.pow(1+taxG,y-1);
+    const gross=b.gross*rg, egi=(gross*(1-s.vacancy/100))+s.otherInc*rg;
+    const opex=b.tax*tg+(b.ins+s.hoa+s.utilities+s.otherExp)*eg+egi*s.pmPct/100+gross*(s.maintPct+s.capexPct)/100;
+    const noiY=(egi-opex)*12;
+    let debtY=0,intY=0,pmiY=0;
+    for(let m=0;m<12;m++){
+      const pmiM=(b.loan>0&&bal>0.78*b.price)?b.loan*s.pmiRate/100/12*(b.ltv>0.8?1:0):0;
+      const int=bal*r;const prin=Math.min(Math.max(b.pi-int,0),bal);
+      bal-=prin;debtY+=(bal+prin>0?b.pi:0)+pmiM;intY+=int;pmiY+=pmiM;
+    }
+    const cfY=noiY-debtY;cum+=cfY;
+    const value=b.price*Math.pow(1+s.appreciation/100,y);
+    const equity=value*(1-s.sellCost/100)-bal;
+    rows.push({y,int:intY,pmiY,capexY:gross*s.capexPct/100*12,rent:gross,noi:noiY,cf:cfY,cum,bal,value,equity,total:cum+equity-b.cashIn});
+  }
+  return rows;
+}
+function irr(flows){
+  const npv=r=>flows.reduce((a,c,i)=>a+c/Math.pow(1+r,i),0);
+  let lo=-0.99,hi=2;if(npv(lo)*npv(hi)>0)return NaN;
+  for(let i=0;i<100;i++){const m=(lo+hi)/2;if(npv(lo)*npv(m)<=0)hi=m;else lo=m}
+  return (lo+hi)/2;
+}
+
+/* ---------- tax model ---------- */
+const M5=[.2,.32,.192,.1152,.1152,.0576],M15=[.05,.095,.0855,.077,.0693,.0623,.059,.059,.0591,.059];
+function depSched(s,basis,withCS,bonus){
+  const p5=withCS?s.cs5/100:0,p15=withCS?s.cs15/100:0;
+  const sl=basis*Math.max(0,1-p5-p15)/27.5,m=Math.min(12,Math.max(1,Math.round(s.inMonth||1)));
+  const b5=basis*p5,b15=basis*p15,out=[];
+  for(let y=1;y<=10;y++){
+    const d5=b5*(y===1?bonus:0)+b5*(1-bonus)*(M5[y-1]||0);
+    const d15=b15*(y===1?bonus:0)+b15*(1-bonus)*(M15[y-1]||0);
+    out.push({d:sl*(y===1?(12-m+0.5)/12:1)+d5+d15,d5});
+  }
+  return out;
+}
+function taxModel(s,b,rows,hold,withCS){
+  const basis=(b.price+b.closing)*(1-s.landPct/100)+s.reno;
+  const bonus=Math.min(1,Math.max(0,s.bonusPct/100));
+  const fed=depSched(s,basis,withCS,bonus),ca=depSched(s,basis,withCS,0);
+  const fr=s.fedRate/100,cr=s.caRate/100;
+  const allow=Math.max(0,25000-0.5*Math.max(0,s.magi-100000));
+  const fedActive=s.taxStatus!=="passive",caActive=s.taxStatus==="str";
+  const pas=(t,susp)=>{if(t<0){const tot=-t+susp,use=Math.min(tot,allow);return[-use,tot-use]}const off=Math.min(t,susp);return[t-off,susp-off]};
+  let suspF=0,suspC=0,totF=0,totC=0,depF=0,depC=0,dep5=0;const yrs=[];
+  for(let i=0;i<hold;i++){
+    const r=rows[i],fee=(withCS&&i===0)?s.csFee:0;
+    const pre=r.noi+r.capexY-r.int-r.pmiY-fee;
+    const tF=pre-fed[i].d,tC=pre-ca[i].d;
+    depF+=fed[i].d;depC+=ca[i].d;dep5+=fed[i].d5;
+    let eF,eC;
+    if(fedActive)eF=tF;else[eF,suspF]=pas(tF,suspF);
+    if(caActive)eC=tC;else[eC,suspC]=pas(tC,suspC);
+    const fS=-eF*fr,cS=-eC*cr;totF+=fS;totC+=cS;
+    yrs.push({y:i+1,depF:fed[i].d,depC:ca[i].d,tF,tC,fS,cS,suspF,suspC,at:r.cf-fee+fS+cS});
+  }
+  const release=suspF*fr+suspC*cr;
+  const recap=dep5*fr+(depF-dep5)*Math.min(.25,fr)+depC*cr;
+  return{basis,yrs,y1:yrs[0],totF,totC,release,recap,net:totF+totC+release-recap,allow,depF};
+}
+
+/* ---------- render ---------- */
+const SEGS=[
+  ["pi","Principal & interest","--s1"],["tax","Property tax","--s2"],["ins","Insurance","--s3"],["pmi","PMI","--s4"],["hoa","HOA","--s5"],
+  ["pm","Management","--s6"],["mc","Maintenance + CapEx","--s7"],["vac","Vacancy","--s8"],["uo","Utilities + other","--s5"]
+];
+function recalc(){
+  persist();
+  const b=calc(S);
+  const hold=Math.min(10,Math.max(1,Math.round(S.hold||5)));
+  const rows=project(S,b);
+  const hr=rows[hold-1];
+  const flows=[-b.cashIn,...rows.slice(0,hold).map(r=>r.cf)];flows[hold]+=hr.equity;
+  const IRR=b.cashIn>0?irr(flows):NaN;
+  const mp=maxPrice(S);
+
+  // verdict
+  const v=$("verdict");const diff=b.cf-S.target;
+  const state=diff>=0?"good":(diff>=-250?"warn":"bad");
+  v.className="verdict "+state;
+  const color={good:"green",warn:"yellow",bad:"red"}[state];
+  $("vStatus").textContent=DIP.VERDICT[color];$("vLight").innerHTML=DIP.light(color,16);$("stLight").innerHTML=DIP.light(color,7);
+  $("vLegend").innerHTML=DIP.legend([["green","Green",`cash flow at or above your target (${S.target?money(S.target)+"/mo":"$0 = break even"})`],["yellow","Yellow","up to $250/mo below it"],["red","Red","more than $250/mo below it"]]);
+  window.__uw={color,b,IRR,hold};
+  $("vCF").textContent=money(b.cf,{sign:true})+"/mo";
+  $("vSub").textContent=`Cash flow after mortgage, taxes, insurance, management, maintenance and reserves · ${money(b.cf*12,{sign:true})}/yr`;
+  $("vGap").innerHTML=diff>=0
+    ?`Room to spare: you could pay up to <b>${money(mp)}</b> and still hit ${S.target?money(S.target)+"/mo":"break even"}.`
+    :`To hit ${S.target?money(S.target)+"/mo":"break even"}: rent needs to be <b>${money(b.beRent)}/mo</b> (+${money(b.beRent-b.gross)}), or price at or below <b>${money(mp)}</b>${mp?` (${pct(mp/S.price-1)})`:""}.`;
+  // bar
+  const parts={pi:b.pi,tax:b.tax,ins:b.ins,pmi:b.pmi,hoa:b.hoa,pm:b.pm,mc:b.maint+b.capex,vac:b.vac,uo:b.util+b.other};
+  const totalOut=Object.values(parts).reduce((a,c)=>a+c,0);
+  const denom=Math.max(totalOut,b.gross+S.otherInc);
+  $("bar").innerHTML=SEGS.filter(g=>parts[g[0]]>0).map(g=>`<span title="${g[1]}: ${money(parts[g[0]])}" style="width:${parts[g[0]]/denom*100}%;background:var(${g[2]})"></span>`).join("")+
+    (b.cf>0?`<span title="Cash flow: ${money(b.cf)}" style="width:${b.cf/denom*100}%;background:var(--good)"></span>`:"");
+  $("legend").innerHTML=SEGS.filter(g=>parts[g[0]]>0).map(g=>`<span><i style="background:var(${g[2]})"></i>${g[1]} ${money(parts[g[0]])}</span>`).join("")+
+    (b.cf>0?`<span><i style="background:var(--good)"></i>Cash flow ${money(b.cf)}</span>`:"");
+  $("barCap").textContent=`Rent ${money(b.gross+S.otherInc)} · costs ${money(totalOut)}`;
+
+  // alerts
+  const al=[];
+  if(b.cashLeft<0)al.push(["bad",`Over your cash budget by ${money(-b.cashLeft)}. Cash needed at close is ${money(b.cashIn)} against ${money(S.cashAvail)} available.`]);
+  else if(b.cashLeft<6*b.piti)al.push(["warn",`Only ${money(b.cashLeft)} left after closing. Lenders often want about 6 months of payments in reserve on investment loans (~${money(6*b.piti)} here).`]);
+  if(b.ltv>0.8)al.push(["warn",`Under 20% down, so PMI is included. Most investment-property loans need 15–25% down; confirm with the lender.`]);
+  if(b.gross===0)al.push(["warn","Add the expected monthly rent to see results."]);
+  $("alerts").innerHTML=al.map(a=>`<div class="alert ${a[0]}">${a[1]}</div>`).join("");
+
+  // metrics
+  const M=[
+    ["Cash-on-cash return",pct(b.coc),"Annual cash flow ÷ cash invested",b.coc>=0.06?"good":b.coc>=0?"warn":"bad"],
+    ["Cap rate",pct(b.capRate,2),"NOI ÷ price (financing-neutral)",b.capRate>=0.055?"good":b.capRate>=0.04?"warn":"bad"],
+    ["DSCR",isFinite(b.dscr)?b.dscr.toFixed(2)+"×":"—","NOI ÷ mortgage; DSCR lenders want 1.0–1.25+",b.dscr>=1.25?"good":b.dscr>=1?"warn":"bad"],
+    ["Break-even rent",money(b.beRent)+"/mo",S.target?"Rent needed to hit your target":"All-in, including reserves",b.gross>=b.beRent?"good":"bad"],
+    ["Rent to cover PITI + HOA",money(b.piti)+"/mo","Mortgage, tax, insurance only",b.gross>=b.piti?"good":"bad"],
+    ["Max price for target",mp?money(mp):"—",S.target?`At ${money(S.target)}/mo cash flow`:"Price where it breaks even",mp>=S.price?"good":"bad"],
+    ["Cash needed to close",money(b.cashIn),`Down ${money(b.down)} + closing ${money(b.closing+b.pts)}${S.reno?" + reno "+money(S.reno):""}`,"neutral"],
+    ["Cash left over",money(b.cashLeft),`Of ${money(S.cashAvail)} available`,b.cashLeft<0?"bad":b.cashLeft<6*b.piti?"warn":"good"],
+    ["Loan amount",money(b.loan),`${pct(b.ltv,1)} LTV · P&I ${money(b.pi)}/mo`,"neutral"],
+    ["Rent-to-price",pct(b.rtp,2),`GRM ${isFinite(b.grm)?b.grm.toFixed(1):"—"} · the "1% rule" is rare in SD`,"neutral"],
+    [`${hold}-yr IRR`,pct(IRR),"Cash flow + appreciation + paydown",IRR>=0.1?"good":IRR>=0.05?"warn":"bad"],
+    [`${hold}-yr total profit`,money(hr.total,{sign:true}),`${b.cashIn>0?((hr.total+b.cashIn)/b.cashIn).toFixed(2)+"× equity multiple":""}`,hr.total>=0?"good":"bad"]
+  ];
+  $("metrics").innerHTML=M.map(m=>`<div class="m ${m[3]}"><div class="k">${m[0]}</div><div class="v">${m[1]}</div><div class="d">${m[2]}</div></div>`).join("");
+
+  // pro forma
+  const L=(n,v,cls="")=>`<tr class="${cls}"><td>${n}</td><td class="${v<0?"neg":""}">${money(v)}</td><td class="${v<0?"neg":""}">${money(v*12)}</td></tr>`;
+  $("pf").innerHTML=`<thead><tr><th></th><th>Monthly</th><th>Annual</th></tr></thead><tbody>
+    <tr class="group"><td colspan="3">Income</td></tr>
+    ${S.units.filter(u=>u.rent>0).map(u=>L(u.label||"Unit",+u.rent)).join("")}
+    ${S.otherInc?L("Other income",S.otherInc):""}
+    ${L(`Vacancy (${S.vacancy}%)`,-b.vac)}
+    ${L("Effective income",b.egi,"total")}
+    <tr class="group"><td colspan="3">Operating expenses</td></tr>
+    ${L("Property tax"+(S.mello?" + assessments":""),-b.tax)}${L("Insurance",-b.ins)}${S.hoa?L("HOA",-S.hoa):""}
+    ${L(`Property management (${S.pmPct}%)`,-b.pm)}${L(`Repairs & maintenance (${S.maintPct}%)`,-b.maint)}${L(`CapEx reserve (${S.capexPct}%)`,-b.capex)}
+    ${S.utilities?L("Utilities",-S.utilities):""}${S.otherExp?L("Other",-S.otherExp):""}
+    ${L("Net operating income (NOI)",b.noi,"total")}
+    <tr class="group"><td colspan="3">Debt service</td></tr>
+    ${L("Principal & interest",-b.pi)}${b.pmi?L("PMI",-b.pmi):""}
+    <tr class="net"><td>Cash flow</td><td class="${b.cf<0?"neg":"pos"}">${money(b.cf,{sign:true})}</td><td class="${b.cf<0?"neg":"pos"}">${money(b.cf*12,{sign:true})}</td></tr>
+  </tbody>`;
+
+  // ADU
+  if(S.showAdu){
+    const a=calc(S,{adu:true});
+    const dCF=a.cf-b.cf;
+    const slope=(1-S.vacancy/100)*(1-S.pmPct/100)-S.maintPct/100-S.capexPct/100;
+    const fixed=S.aduValue*S.taxRate/100/12+S.aduIns/12+S.aduUtil+a.aduDebt;
+    const payRent=slope>0?fixed/slope:Infinity;
+    const needRent=slope>0?Math.max(0,S.aduRent+(S.target-a.cf)/slope):Infinity;
+    const cashCost=S.aduFund==="cash"?S.aduCost:0;
+    const carry=S.aduFund==="loan"?S.aduCost*S.aduRate/100/12*S.aduMonths*0.5:0;
+    let maxCost=null;
+    if(S.aduFund==="loan"){const f=c=>calc(S,{adu:true,aduCost:c}).cf-S.target;if(f(0)<0)maxCost=0;else{let lo=0,hi=5e6;for(let i=0;i<60;i++){const m=(lo+hi)/2;if(f(m)>=0)lo=m;else hi=m}maxCost=lo}}
+    const eq=S.aduValue-S.aduCost;
+    $("vAdu").textContent=`With the ADU: ${money(a.cf,{sign:true})}/mo (${money(dCF,{sign:true})} vs. as-is) once it's rented`;
+    $("aduHero").innerHTML=`
+      <div><div class="k">Cash flow with ADU</div><div class="v ${a.cf-S.target<0?"neg":"pos"}">${money(a.cf,{sign:true})}</div><div class="d">${money(dCF,{sign:true})}/mo vs. as-is</div></div>
+      <div><div class="k">ADU rent to pay for itself</div><div class="v">${money(payRent)}</div><div class="d">Covers its loan, tax, insurance, reserves</div></div>
+      <div><div class="k">ADU rent to hit ${S.target?"target":"break even"}</div><div class="v">${isFinite(needRent)?money(needRent):"—"}</div><div class="d">For the whole property</div></div>
+      <div><div class="k">Equity created</div><div class="v ${eq<0?"neg":"pos"}">${money(eq,{sign:true})}</div><div class="d">Value added minus build cost</div></div>`;
+    const C=(n,x,y,f=money,good)=>{const d=y-x;return `<tr><td>${n}</td><td>${f(x)}</td><td>${f(y)}</td><td class="${d===0?"":((good??1)*d>0?"pos":"neg")}">${d===0?"—":(f===money?money(d,{sign:true}):(d>0?"+":"")+f(d))}</td></tr>`};
+    const p2=v=>isFinite(v)?(v*100).toFixed(1)+"%":"—", x2=v=>isFinite(v)?v.toFixed(2)+"×":"—";
+    $("aduCmp").innerHTML=`<thead><tr><th></th><th>As-is</th><th>With ADU</th><th>Change</th></tr></thead><tbody>
+      ${C("Gross rent / mo",b.gross,a.gross)}
+      ${C("Property tax / mo",b.tax,a.tax,money,-1)}
+      ${C("Insurance / mo",b.ins,a.ins,money,-1)}
+      ${C("NOI / mo",b.noi,a.noi)}
+      ${C("Debt payments / mo",b.debt,a.debt,money,-1)}
+      <tr class="net"><td>Cash flow / mo</td><td class="${b.cf<0?"neg":"pos"}">${money(b.cf,{sign:true})}</td><td class="${a.cf<0?"neg":"pos"}">${money(a.cf,{sign:true})}</td><td class="${dCF<0?"neg":"pos"}">${money(dCF,{sign:true})}</td></tr>
+      ${C("Cash invested",b.cashIn,a.cashIn,money,-1)}
+      ${C("Cash-on-cash",b.coc,a.coc,p2)}
+      ${C("Cap rate (on total cost)",b.capRate,a.noi*12/(S.price+S.aduCost),p2)}
+      ${C("DSCR",b.dscr,a.noi/a.debt,x2)}
+      ${C("Property value",S.price,S.price+S.aduValue)}
+      ${maxCost!==null?`<tr><td>Max build cost to hit ${S.target?"target":"break even"}</td><td></td><td>${money(maxCost)}</td><td></td></tr>`:""}
+    </tbody>`;
+    const notes=[];
+    notes.push(`During the ${S.aduMonths}-month build, the ADU earns nothing${carry?`, and interest on loan draws runs roughly ${money(carry)} total`:""}. The numbers above assume it's finished and rented.`);
+    if(S.aduFund==="cash")notes.push(`Paying cash adds ${money(S.aduCost)} to cash invested${b.cashLeft-S.aduCost<0?`, which is ${money(S.aduCost-b.cashLeft)} more than the cash left after closing`:""}.`);
+    else notes.push("Financing usually needs equity first (HELOC) or a renovation loan written at purchase. HELOCs on investment properties are harder to get and often variable-rate, so confirm availability.");
+    notes.push("Adding an ADU normally reassesses only the new construction, not the whole property. Check the lot's zoning and ADU rules with the City of San Diego before relying on this.");
+    $("aduNote").textContent=notes.join(" ");
+  }
+
+  // tax
+  const tS=taxModel(S,b,rows,hold,false),tC=taxModel(S,b,rows,hold,true);
+  const y1Save=tC.y1.fS+tC.y1.cS;
+  $("vTax").textContent=`With tax benefits (year 1, cost seg): ${money((tC.y1.at)/12,{sign:true})}/mo · ${money(tC.y1.at,{sign:true})}/yr after tax`;
+  $("taxHero").innerHTML=`
+    <div><div class="k">Year-1 federal write-off</div><div class="v">${money(tC.y1.depF)}</div><div class="d">vs ${money(tS.y1.depF)} without cost seg</div></div>
+    <div><div class="k">Tax saved in year 1</div><div class="v ${y1Save<0?"neg":"pos"}">${money(y1Save,{sign:true})}</div><div class="d">Federal ${money(tC.y1.fS,{sign:true})} + CA ${money(tC.y1.cS,{sign:true})}</div></div>
+    <div><div class="k">Loss carried forward</div><div class="v">${money(tC.y1.suspF)}</div><div class="d">Federal, not usable yet</div></div>
+    <div><div class="k">Net benefit over ${hold} yrs</div><div class="v ${tC.net<0?"neg":"pos"}">${money(tC.net,{sign:true})}</div><div class="d">After est. recapture at sale</div></div>`;
+  const notes={
+    passive:`<b>Passive (W-2 earner):</b> at ${money(S.magi)} household income, the $25K rental-loss allowance is ${tC.allow>0?"reduced to "+money(tC.allow):"fully phased out"}. Depreciation losses can't offset W-2 income. They carry forward, shelter future rental income, and are released when you sell. To use cost seg against W-2 income now, you or a spouse need REPS, or the property has to run as a short-term rental you materially participate in. Switch the setting above to compare.`,
+    reps:`<b>Real estate professional:</b> requires 750+ hours a year and more than half of working time in real estate, plus material participation. It's rarely possible alongside a full-time W-2 job, but a spouse who qualifies can unlock it on a joint return. California doesn't recognize REPS, so state losses stay passive.`,
+    str:`<b>Short-term rental:</b> average guest stay of 7 days or less, plus material participation (commonly 100+ hours and more than anyone else, including cleaners), keeps losses non-passive. The rent and expense inputs above need to reflect STR numbers. San Diego caps whole-home STR licenses, so confirm one is obtainable before counting on this.`};
+  $("taxNote").innerHTML=notes[S.taxStatus]||notes.passive;
+  const R=(n,a,c,f=money)=>`<tr><td>${n}</td><td class="${a<0?"neg":""}">${f(a)}</td><td class="${c<0?"neg":""}">${f(c)}</td></tr>`;
+  const sg=v=>money(v,{sign:true});
+  $("taxCmp").innerHTML=`<thead><tr><th></th><th>Standard</th><th>Cost seg</th></tr></thead><tbody>
+    ${R("Depreciable basis (building)",tS.basis,tC.basis)}
+    ${R("Year-1 depreciation, federal",tS.y1.depF,tC.y1.depF)}
+    ${R("Year-1 depreciation, California",tS.y1.depC,tC.y1.depC)}
+    ${R("Year-1 rental taxable income (federal)",tS.y1.tF,tC.y1.tF)}
+    ${R("Federal tax saved, year 1",tS.y1.fS,tC.y1.fS,sg)}
+    ${R("California tax saved, year 1",tS.y1.cS,tC.y1.cS,sg)}
+    ${R("Federal loss carried forward",tS.y1.suspF,tC.y1.suspF)}
+    ${R("After-tax cash flow, year 1",tS.y1.at,tC.y1.at,sg)}
+    ${R(`Tax saved over ${hold} yrs + released at sale`,tS.totF+tS.totC+tS.release,tC.totF+tC.totC+tC.release,sg)}
+    ${R("Est. recapture tax at sale",-tS.recap,-tC.recap,sg)}
+    <tr class="net"><td>Net tax benefit</td><td class="${tS.net<0?"neg":"pos"}">${sg(tS.net)}</td><td class="${tC.net<0?"neg":"pos"}">${sg(tC.net)}</td></tr></tbody>`;
+  $("taxYrs").innerHTML=`<thead><tr><th>Year</th><th>Depreciation</th><th>Taxable income</th><th>Federal</th><th>California</th><th>Carried fwd</th><th>After-tax CF</th></tr></thead><tbody>`+
+    tC.yrs.map(r=>`<tr><td>${r.y}</td><td>${money(r.depF)}</td><td class="${r.tF<0?"neg":""}">${money(r.tF)}</td><td class="${r.fS<0?"neg":"pos"}">${sg(r.fS)}</td><td class="${r.cS<0?"neg":"pos"}">${sg(r.cS)}</td><td>${money(r.suspF)}</td><td class="${r.at<0?"neg":"pos"}">${sg(r.at)}</td></tr>`).join("")+"</tbody>";
+
+  // sensitivity
+  const steps=[-0.10,-0.05,0,0.05,0.10];
+  const rentSteps=[-0.10,-0.05,0,0.05,0.10];
+  let sh=`<thead><tr><th class="rowh">Price ↓ / Rent →</th>${rentSteps.map(r=>`<th>${money(b.gross*(1+r),{short:true})}</th>`).join("")}</tr></thead><tbody>`;
+  steps.forEach(p=>{
+    const price=S.price*(1+p);
+    sh+=`<tr><th class="rowh">${money(price,{short:true})}</th>`+rentSteps.map(r=>{
+      const c=calc(S,{price,rentScale:1+r}).cf,d=c-S.target;
+      const bg=d>=0?"var(--good-bg)":d>=-250?"var(--warn-bg)":"var(--bad-bg)",fg=d>=0?"var(--good)":d>=-250?"var(--warn)":"var(--bad)";
+      return `<td class="cell${p===0&&r===0?" base":""}" style="background:${bg};color:${fg}">${money(c,{sign:true})}</td>`}).join("")+`</tr>`;
+  });
+  $("sens").innerHTML=sh+"</tbody>";
+
+  // projection
+  $("projAside").textContent=`Hold year ${hold} highlighted`;
+  $("proj").innerHTML=`<thead><tr><th>Year</th><th>Rent/mo</th><th>Cash flow</th><th>Cumulative</th><th>Value</th><th>Loan</th><th>Net equity</th><th>Total profit</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr class="${r.y===hold?"hold":""}"><td>${r.y}</td><td>${money(r.rent)}</td><td class="${r.cf<0?"neg":""}">${money(r.cf,{sign:true})}</td><td class="${r.cum<0?"neg":""}">${money(r.cum,{sign:true})}</td><td>${money(r.value)}</td><td>${money(r.bal)}</td><td>${money(r.equity)}</td><td class="${r.total<0?"neg":"pos"}">${money(r.total,{sign:true})}</td></tr>`).join("")+"</tbody>";
+
+  // sticky + summaries
+  $("stCF").textContent=money(b.cf,{sign:true});$("stCoC").textContent=pct(b.coc);$("stDSCR").textContent=isFinite(b.dscr)?b.dscr.toFixed(2):"—";
+  $("sum-loan").textContent=`${money(S.price,{short:true})} · ${Math.round(b.down/S.price*100)||0}% down`;
+  $("sum-income").textContent=`${money(b.gross)}/mo`;
+  $("sum-tax").textContent=`${money(b.tax+b.ins+S.hoa)}/mo`;
+  $("sum-ops").textContent=`${money(b.pm+b.maint+b.capex+S.utilities+S.otherExp)}/mo`;
+  $("sum-reno").textContent=S.reno?money(S.reno,{short:true}):"None";
+  $("sum-adu").textContent=`${money(S.aduCost,{short:true})} · ${money(S.aduRent)}/mo`;
+  $("sum-taxs").textContent={passive:"Passive",reps:"REPS",str:"STR"}[S.taxStatus]||"";
+  $("sum-exit").textContent=`${S.target?money(S.target)+"/mo":"Break even"} · ${hold} yr`;
+  window.__last=b;
+}
+
+$("resetBtn").addEventListener("click",()=>{const keep=S.showTax,keepA=S.showAdu;S=structuredClone(DEFAULTS);S.showTax=keep;S.showAdu=keepA;fillAll();applyAdu();applyTax();recalc()});
+
+function applyAdu(){document.body.classList.toggle("adu-on",!!S.showAdu);$("aduToggle").checked=!!S.showAdu;const t=$("sec-adu");if(t&&S.showAdu)t.open=true}
+$("aduToggle").addEventListener("change",e=>{S.showAdu=e.target.checked;applyAdu();recalc()});
+function applyTax(){document.body.classList.toggle("tax-on",!!S.showTax);$("taxToggle").checked=!!S.showTax;const t=$("sec-taxs");if(t&&S.showTax)t.open=true}
+$("taxToggle").addEventListener("change",e=>{S.showTax=e.target.checked;applyTax();recalc()});
+buildInputs();fillAll();applyAdu();applyTax();recalc();
+/* ---- Does It Pencil? site integration: labeled saves, share link, PDF, email, next step ---- */
+const uwBar=window.__dipBar=DIP.mountSaveBar({el:'dip-savebar',calc:'underwriting',
+  getState:()=>{S.name=uwBar?uwBar.label:S.name;return structuredClone(S)},
+  setState:st=>{S=Object.assign(structuredClone(DEFAULTS),structuredClone(st));fillAll();applyAdu();applyTax();recalc()},
+  reset:()=>{const keep=S.showTax,keepA=S.showAdu;S=structuredClone(DEFAULTS);S.name="";S.showTax=keep;S.showAdu=keepA;fillAll();applyAdu();applyTax();recalc()},
+  defaultLabel:st=>(st.name&&!/^Sample/.test(st.name))?st.name:"Rental at "+money(st.price),
+  summarize:st=>{const b=calc(st),d=b.cf-st.target,c=d>=0?"green":d>=-250?"yellow":"red";return {headline:money(b.cf,{sign:true})+"/mo",detail:money(st.price)+" · CoC "+pct(b.coc)+" · DSCR "+(isFinite(b.dscr)?b.dscr.toFixed(2):"—"),tone:{green:"good",yellow:"warn",red:"bad"}[c]}},
+  report:()=>{recalc();const u=window.__uw,b=u.b;
+    const kpis=[...document.querySelectorAll("#metrics .m")].map(m=>[m.querySelector(".k").textContent,m.querySelector(".v").textContent,m.querySelector(".d").textContent]);
+    const blocks=[{kpis},{node:$("pf"),title:"Monthly pro forma (year 1)"}];
+    if(S.showAdu)blocks.push({node:$("aduCmp"),title:"ADU add-on"});
+    if(S.showTax){blocks.push({node:$("taxCmp"),title:"Standard depreciation vs. cost segregation"});blocks.push({node:$("taxYrs"),title:"Year by year with cost segregation"})}
+    blocks.push({node:$("sens"),title:"Sensitivity: monthly cash flow at different prices and rents"});
+    blocks.push({node:$("proj"),title:"10-year projection"});
+    const al=$("alerts").textContent.trim();if(al)blocks.push({note:al});
+    blocks.push({note:"Property tax grows at the lesser of expense growth or 2%/yr (Prop 13). PMI drops at 78% LTV. Equity is after selling costs. Estimates only; not financial, legal or tax advice."});
+    return {title:"Rental Underwriting",subtitle:money(S.price)+" purchase · "+u.hold+"-year hold",
+      verdict:{color:u.color,headline:money(b.cf,{sign:true})+"/mo cash flow",sub:$("vGap").textContent},
+      legend:[["green","Green",`at or above target (${S.target?money(S.target)+"/mo":"break even"})`],["yellow","Yellow","up to $250/mo below"],["red","Red","more than $250/mo below"]],blocks}}});
+const markDirty=()=>uwBar.changed();
+$("inputs").addEventListener("input",markDirty);$("inputs").addEventListener("change",markDirty);
+$("aduToggle").addEventListener("change",markDirty);$("taxToggle").addEventListener("change",markDirty);$("resetBtn").addEventListener("click",markDirty);
+DIP.mountEmail({el:"dip-email",calc:"underwriting",getState:()=>structuredClone(S),getLabel:()=>uwBar.label,
+  summarize:st=>{const b=calc(st);return {headline:money(b.cf,{sign:true})+"/mo cash flow",detail:money(st.price)+" · CoC "+pct(b.coc)+" · cap "+pct(b.capRate,2)}}});
+DIP.mountNext("dip-next","rental","Buying with cash or a HELOC and refinancing into a DSCR loan? The Rental Quick Check models that path in two minutes.");
+
+/* report height to a parent page (for iframe embeds, e.g. Lofty) */
+(function(){if(window.parent===window)return;let last=0;
+ const send=()=>{const h=Math.ceil(document.documentElement.scrollHeight);if(Math.abs(h-last)>2){last=h;try{parent.postMessage({type:"uw-height",height:h},"*")}catch(e){}}};
+ try{new ResizeObserver(send).observe(document.body)}catch(e){setInterval(send,500)}
+ window.addEventListener("load",send);send();})();
+</script>
+
+</body>
+</html>

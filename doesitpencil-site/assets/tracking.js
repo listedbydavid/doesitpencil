@@ -1,18 +1,25 @@
-/* Tracking IDs for doesitpencil.org.
-   Paste your IDs between the quotes, commit, and every page starts sending data.
-   Leave a value blank ('') to turn that tracker off.
+/* Site settings for doesitpencil.org: tracking IDs and the Mailchimp signup.
+   Paste values between the quotes, commit, and every page picks them up.
+   Anything left blank ('') stays turned off.
 
-   googleTagId : Google Analytics 4 measurement ID (looks like G-XXXXXXXXXX)
-                 or a Google Ads tag ID (looks like AW-XXXXXXXXXX).
-                 To use both, list them: googleTagIds: ['G-XXXXXXXXXX','AW-XXXXXXXXXX']
-   metaPixelId : Facebook / Meta Pixel ID (a long number, like 123456789012345)
+   googleTagId : Google Analytics 4 measurement ID (G-XXXXXXXXXX) or Google Ads tag (AW-XXXXXXXXXX).
+                 To use both: googleTagIds: ['G-XXXXXXXXXX','AW-XXXXXXXXXX']
+   metaPixelId : Facebook / Meta Pixel ID (a long number)
 
-   Events sent automatically:
-     page view on every page
-     join_community_click (Meta: Lead) when someone clicks any Skool link
-     calculation_saved when someone saves a calculation
-     report_download when someone downloads a PDF or JPG report */
+   mailchimp.action : the form "action" URL from Mailchimp's embedded signup form.
+                      Looks like https://xxxx.us21.list-manage.com/subscribe/post?u=...&id=...&f_id=...
+                      While blank, the "Email me this deal" box stays hidden.
+   mailchimp.*Field : merge tags you create in Mailchimp (Audience > Settings > Merge fields, type Text).
+
+   Events sent automatically: page views, join_community_click (Meta: Lead), calculation_saved,
+   share_deal, shared_deal_opened, email_signup, report_download. */
 window.DIP_TRACKING = {
   googleTagId: '',
-  metaPixelId: ''
+  metaPixelId: '',
+  mailchimp: {
+    action: '',
+    calcField: 'CALC',
+    summaryField: 'DEALSUM',
+    linkField: 'DEALLINK'
+  }
 };
