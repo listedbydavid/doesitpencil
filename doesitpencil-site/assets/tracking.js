@@ -15,7 +15,7 @@
    share_deal, shared_deal_opened, email_signup, report_download. */
 window.DIP_TRACKING = {
   googleTagId: '',
-  metaPixelId: '',
+  metaPixelId: '2093658071336602',
   mailchimp: {
     action: '',
     calcField: 'CALC',
